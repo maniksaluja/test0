@@ -95,12 +95,12 @@ async def em(_, m):
         return await m.reply("Reply to a message.")
     try:
         id = int(m.text.split()[1])
+    except:
+        return await m.reply("Enter ID to send message.")
     if reply.forward_from or reply.forward_from_chat:
         forward = True
     else:
         forward = False
-    except:
-        return await m.reply("Provide ID of target user.")
     if forward:
         await reply.forward(id)
     else:
