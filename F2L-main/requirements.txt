@@ -1,4 +1,0 @@
-pyrogram==2.0.100
-tgcrypto
-motor
-requests
