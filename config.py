@@ -1,21 +1,21 @@
 from os import getenv
 
-API_ID = int(getenv('API_ID', '13691707'))
-API_HASH = getenv('API_HASH', '2a31b117896c5c7da27c74025aa602b8')
-BOT_TOKEN = getenv('BOT_TOKEN', '6991984995:AAG6n27-EtnS75bnkZ2NG_oBXeSJWvcouKo')
-BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7116930022:AAHOOfx_TdI1KWDgswT0_3OhWs0XrT1Xhp4')
+API_ID = int(getenv('API_ID', '29321225'))
+API_HASH = getenv('API_HASH', '9af2b4ce5315e0222d0b30eba7b0905d')
+BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAFJRqGnKKX4ZsW7SOE-OCTjrwq4D_UIEK8')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGhIdnbcplS43a1yBlBkF9qQB9hPX5HkXE')
 
-SUDO_USERS = getenv('SUDO_USERS', '5903688119 6875283156') # Example: '1234 6789'
-MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://f2ltest:91leanner@cluster0.4cbze6r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+SUDO_USERS = getenv('SUDO_USERS', '6604279354') # Example: '1234 6789'
+MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4RswM@cluster0.vn1hama.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
-DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002186956653'))
+DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002119403779'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '7150728058'))
-LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002162868106') # Keep it Empty if no Log Channel  
+LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '') # Keep it Empty if no Log Channel  
 
-AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '10')) # Enter time in seconds, keep it 0 for disabling.
+AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '18000')) # Enter time in seconds, keep it 0 for disabling.
 
-FSUB_1 = -1002127072624
-FSUB_2 = -1002127072624
+FSUB_1 = -1002099961365
+FSUB_2 = -1001999286144
 
 MUST_VISIT_LINK = "https://t.me/Utra_XYZ/34"
 
@@ -43,7 +43,7 @@ STICKER_ID = 'CAACAgUAAxkBAAIiHWZjPezFGPWT_87VHnJUaschvGtrAAJtDgACYpoYV06rLlLA8d
 
 CONTENT_SAVER = True
 
-EXPIRY_TIME = 1 # In days
+EXPIRY_TIME = 30 # In days
 
 AUTO_SAVE_CHANNEL_ID = -1002179131802
 
