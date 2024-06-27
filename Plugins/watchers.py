@@ -91,5 +91,5 @@ async def cwf(_: Client, m: Message):
         msg = await tryer(m.reply_photo, LINK_GENERATE_IMAGE, caption=txt, quote=True)
     else:
         msg = await tryer(m.reply, txt, quote=True)
-    if LOG_CHANNEL_ID:
+    if LOG_CHANNEL_ID and settings.get('logs', True):
         await tryer(msg.copy, LOG_CHANNEL_ID)
