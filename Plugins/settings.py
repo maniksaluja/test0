@@ -32,6 +32,10 @@ def markup(dic):
                 IKB(yes if dic.get('auto_save', True) else no, callback_data='toggle_save')
             ],
             [
+                IKB('𝘓𝘰𝘨 𝘊𝘩𝘢𝘯𝘯𝘦𝘭', callback_data='answer'),
+                IKB(yes if dic.get('logs', True) else no, callback_data='toggle_logs')
+            ],
+            [
                 IKB('𝘈𝘶𝘵𝘰 𝘎𝘦𝘯𝘦𝘳𝘢𝘵𝘦', callback_data='answer'),
                 IKB(dic.get('generate', 20), callback_data='toggle_gen')
             ]
