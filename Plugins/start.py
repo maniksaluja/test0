@@ -6,7 +6,6 @@ from time import time
 from Database.auto_delete import update, get
 from Database.privileges import get_privileges
 from . import AUTO_DELETE_STR, tryer
-from raw_func import getChatMember
 from Database.users import add_user, is_user
 from templates import AUTO_DELETE_TEXT, START_MESSAGE, START_MESSAGE_2, TRY_AGAIN_TEXT
 from .block import block_dec
