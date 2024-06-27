@@ -117,7 +117,7 @@ async def generate2(_, m):
         msg = await m.reply_photo(LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup)
       else:
         msg = await m.reply(txt, reply_markup=markup)
-      if LOG_CHANNEL_ID:
+      if LOG_CHANNEL_ID and settings.get('logs', True):
         await msg.copy(LOG_CHANNEL_ID)
   await tryer(okkie.delete)    
   await tryer(m.reply, "**Generation Completed.**", quote=True)
