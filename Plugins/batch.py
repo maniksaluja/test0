@@ -91,11 +91,11 @@ async def end(_, m):
   await iffff.delete()
   if LINK_GENERATE_IMAGE and settings['image']:
     await m.reply_photo(LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup, quote=True)
-    if LOG_CHANNEL_ID:
+    if LOG_CHANNEL_ID and settings.get('logs', True):
       await _.send_photo(LOG_CHANNEL_ID, LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup)
   else:
     await m.reply(txt, reply_markup=markup, quote=True),
-    if LOG_CHANNEL_ID:
+    if LOG_CHANNEL_ID and settings.get('logs', True):
       await _.send_message(LOG_CHANNEL_ID, txt, reply_markup=markup)
 
 @Client.on_message(filters.command('end') & filters.user(SUDO_USERS) & filters.private)
