@@ -26,7 +26,10 @@ async def cmufunc(_, cmu):
     if joined:
         members[cmu.chat.id].append(cmu.from_user.id)
     elif left:
-        members[cmu.chat.id].remove(cmu.from_user.id)
+        try:
+            members[cmu.chat.id].remove(cmu.from_user.id)
+        except:
+            pass
         
 def check_fsub(user_id: int) -> bool:
     x = True
