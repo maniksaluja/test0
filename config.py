@@ -19,7 +19,7 @@ FSUB_2 = -1001999286144
 
 MUST_VISIT_LINK = "https://t.me/Utra_XYZ/34"
 
-LINK_GENERATE_IMAGE = getenv('LINK_GENERATE_IMAGE', 'https://graph.org/file/4312b84784d06baa0783f.jpg')
+LINK_GENERATE_IMAGE = getenv('LINK_GENERATE_IMAGE', 'https://graph.org/file/a1cce5b8533180c2f0029.jpg')
 
 TUTORIAL_LINK = getenv('TUTORIAL_LINK', 'https://t.me/Utra_XYZ/32')
 
