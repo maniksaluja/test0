@@ -11,6 +11,7 @@ from Database.users import add_user, is_user
 from templates import AUTO_DELETE_TEXT, START_MESSAGE, START_MESSAGE_2, TRY_AGAIN_TEXT
 from .block import block_dec
 from Database.encr import get_encr
+import asyncio
 
 FSUB = [FSUB_1, FSUB_2]
 
@@ -151,6 +152,7 @@ async def start(_, m):
                         continue
                     gg = await tryer(x.copy, m.from_user.id, protect_content=True)
                     haha.append(gg)
+                    await asyncio.sleep(1)
             else:
                 for x in messes:
                     if not x:
@@ -159,6 +161,7 @@ async def start(_, m):
                         continue
                     gg = await tryer(x.copy, m.from_user.id)
                     haha.append(gg)
+                    await asyncio.sleep(1)
                     # tasks.append(asyncio.create_task(x.copy(m.from_user.id)))
             await std.delete()
             if AUTO_DELETE_TIME != 0:
@@ -208,6 +211,7 @@ async def start(_, m):
                         continue
                     gg = await tryer(x.copy, m.from_user.id, protect_content=True)
                     haha.append(gg)
+                    await asyncio.sleep(1)
             else:
                 for x in messes:
                     if not x:
@@ -216,6 +220,7 @@ async def start(_, m):
                         continue
                     gg = await tryer(x.copy, m.from_user.id)
                     haha.append(gg)
+                    await asyncio.sleep(1)
                     # tasks.append(asyncio.create_task(x.copy(m.from_user.id)))
             await std.delete()
             if AUTO_DELETE_TIME != 0:
