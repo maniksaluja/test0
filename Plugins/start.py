@@ -31,7 +31,7 @@ async def cmufunc(_, cmu):
 def check_fsub(user_id: int) -> bool:
     x = True
     for y in FSUB:
-        x = user_id in members[x]
+        x = user_id in members[y]
     return x
 
 async def init_task():
