@@ -17,4 +17,7 @@ def encrypt(txt: str) -> str:
     return base64.b64encode(txt.encode('utf-8')).decode('utf-8')
 
 def decrypt(txt: str) -> str:
+    x = len(txt) % 4
+    if x != 0:
+        txt += '=' * x
     return base64.b64decode(txt.encode('utf-8')).decode('utf-8')
