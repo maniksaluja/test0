@@ -76,8 +76,8 @@ async def start(_, m):
         if command.startswith('get'):
             encr = command[3:]
             for i in chats:
-                res = getChatMember(i.id, m.from_user.id)['result']
-                if res['status'] in ['left', 'banned']:
+                status = await tryer(_.get_chat_member(i.id, m.from_user.id))
+                if status.status.name in ['LEFT', 'BANNED']:
                     mark = await markup(_, f'https://t.me/{me.username}?start=get{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
             std = await m.reply_sticker(STICKER_ID)
@@ -102,8 +102,8 @@ async def start(_, m):
         elif command.startswith('batchone'):
             encr = command[8:]
             for i in chats:
-                res = getChatMember(i.id, m.from_user.id)['result']
-                if res['status'] in ['left', 'banned']:
+                status = await tryer(_.get_chat_member(i.id, m.from_user.id))
+                if status.status.name in ['LEFT', 'BANNED']:
                     #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchone{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
@@ -178,8 +178,8 @@ async def start(_, m):
         elif command.startswith('batchtwo'):
             encr = command[8:]
             for i in chats:
-                res = getChatMember(i.id, m.from_user.id)['result']
-                if res['status'] in ['left', 'banned']:
+                status = await tryer(_.get_chat_member(i.id, m.from_user.id))
+                if status.status.name in ['LEFT', 'BANNED']:
                     #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchtwo{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
