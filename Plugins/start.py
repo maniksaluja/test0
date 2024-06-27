@@ -32,10 +32,10 @@ async def cmufunc(_, cmu):
             pass
         
 def check_fsub(user_id: int) -> bool:
-    x = []
     for y in FSUB:
-        x.append(user_id in members[y])
-    return not False in x
+        if not user_id in members[y]:
+            return False
+    return True
 
 async def init_task():
     for x in FSUB:
