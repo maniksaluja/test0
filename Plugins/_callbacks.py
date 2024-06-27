@@ -64,6 +64,13 @@ async def cbq(_, q: CallbackQuery):
         await q.answer()
         await update_settings(dic)
         await q.edit_message_reply_markup(reply_markup=mark)
+    elif data == "toggle_logs":
+        dic = await get_settings()
+        dic['logs'] = not dic.get('logs', True)
+        mark = markup(dic)
+        await q.answer()
+        await update_settings(dic)
+        await q.edit_message_reply_markup(reply_markup=mark)
     elif data.startswith(("toggleab", "togglesu", "togglemc", "togglead", "activate")):
         await pay_cbq(_, q)
         
