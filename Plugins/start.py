@@ -11,8 +11,37 @@ from templates import AUTO_DELETE_TEXT, START_MESSAGE, START_MESSAGE_2, TRY_AGAI
 from .block import block_dec
 from Database.encr import get_encr
 import asyncio
+from main import app
+
+members = {} # {chat_id: [user_id]}
 
 FSUB = [FSUB_1, FSUB_2]
+
+@Client.on_chat_member_updated(filters.chat(FSUB))
+async def cmufunc(_, cmu):
+    if not cmu.chat.id in members:
+        return
+    joined = cmu.new_chat_member and not cmu.old_chat_member
+    left = cmu.old_chat_member and not cmu.new_chat_member
+    if joined:
+        members[cmu.chat.id].append(cmu.from_user.id)
+    elif left:
+        members[cmu.chat.id].remove(cmu.from_user.id)
+        
+def check_fsub(user_id: int) -> bool:
+    x = True
+    for y in FSUB:
+        x = user_id in members[x]
+    return x
+
+async def init_task():
+    for x in FSUB:
+        lis = []
+        async for y in app.get_chat_members(x):
+            lis.append(y.user.id)
+        members[x] = lis
+
+asyncio.create_task(init_task())
 
 me = None
 chats = []
@@ -75,8 +104,7 @@ async def start(_, m):
         if command.startswith('get'):
             encr = command[3:]
             for i in chats:
-                status = await tryer(_.get_chat_member, i.id, m.from_user.id)
-                if status.status.name in ['LEFT', 'BANNED']:
+                if not check_fsub(m.from_user.id):
                     mark = await markup(_, f'https://t.me/{me.username}?start=get{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
             std = await m.reply_sticker(STICKER_ID)
@@ -101,8 +129,7 @@ async def start(_, m):
         elif command.startswith('batchone'):
             encr = command[8:]
             for i in chats:
-                status = await tryer(_.get_chat_member, i.id, m.from_user.id)
-                if status.status.name in ['LEFT', 'BANNED']:
+                if not check_fsub(m.from_user.id):
                     #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchone{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
@@ -177,8 +204,7 @@ async def start(_, m):
         elif command.startswith('batchtwo'):
             encr = command[8:]
             for i in chats:
-                status = await tryer(_.get_chat_member, i.id, m.from_user.id)
-                if status.status.name in ['LEFT', 'BANNED']:
+                if not check_fsub(m.from_user.id):
                     #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchtwo{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
