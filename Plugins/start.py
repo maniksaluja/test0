@@ -40,6 +40,7 @@ async def init_task():
         async for y in app.get_chat_members(x):
             lis.append(y.user.id)
         members[x] = lis
+        print(len(lis))
 
 asyncio.create_task(init_task())
 
