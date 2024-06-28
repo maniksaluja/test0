@@ -11,7 +11,7 @@ from templates import AUTO_DELETE_TEXT, START_MESSAGE, START_MESSAGE_2, TRY_AGAI
 from .block import block_dec
 from Database.encr import get_encr
 import asyncio
-from main import app
+from main import app1
 
 # members = {} # {chat_id: [user_id]}
 
@@ -33,10 +33,10 @@ async def cmufunc(_, cmu):
             pass
 """
         
-async def check_fsub(_, user_id: int) -> bool:
+async def check_fsub(user_id: int) -> bool:
     for y in FSUB:
         try:
-            x = await tryer(_.get_chat_member, y, user_id)
+            x = await tryer(app1.get_chat_member, y, user_id)
             if not x.status.name in ["ADMINISTRATOR", "OWNER", "MEMBER"]:
                 return False
         except:
@@ -116,7 +116,7 @@ async def start(_, m):
         if command.startswith('get'):
             encr = command[3:]
             for i in chats:
-                if not await check_fsub(_, m.from_user.id):
+                if not await check_fsub(m.from_user.id):
                     mark = await markup(_, f'https://t.me/{me.username}?start=get{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
             std = await m.reply_sticker(STICKER_ID)
@@ -141,7 +141,7 @@ async def start(_, m):
         elif command.startswith('batchone'):
             encr = command[8:]
             for i in chats:
-                if not await check_fsub(_, m.from_user.id):
+                if not await check_fsub(m.from_user.id):
                     #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchone{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
@@ -216,7 +216,7 @@ async def start(_, m):
         elif command.startswith('batchtwo'):
             encr = command[8:]
             for i in chats:
-                if not await check_fsub(_, m.from_user.id):
+                if not await check_fsub(m.from_user.id):
                     #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchtwo{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
