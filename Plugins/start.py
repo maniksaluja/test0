@@ -13,10 +13,11 @@ from Database.encr import get_encr
 import asyncio
 from main import app
 
-members = {} # {chat_id: [user_id]}
+# members = {} # {chat_id: [user_id]}
 
 FSUB = [FSUB_1, FSUB_2]
 
+"""
 @Client.on_chat_member_updated(filters.chat(FSUB))
 async def cmufunc(_, cmu):
     if not cmu.chat.id in members:
@@ -30,6 +31,7 @@ async def cmufunc(_, cmu):
             members[cmu.chat.id].remove(cmu.from_user.id)
         except:
             pass
+"""
         
 async def check_fsub(_, user_id: int) -> bool:
     for y in FSUB:
@@ -41,6 +43,7 @@ async def check_fsub(_, user_id: int) -> bool:
             return False
     return True
 
+"""
 async def init_task():
     for x in FSUB:
         lis = []
@@ -50,6 +53,7 @@ async def init_task():
         print(len(lis))
 
 asyncio.create_task(init_task())
+"""
 
 me = None
 chats = []
