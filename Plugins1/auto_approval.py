@@ -33,8 +33,11 @@ async def cjr(_: Client, r):
         return
     if r.chat.id == FSUB_2:
         return await add_user_2(r.from_user.id)
-    if JOIN_IMAGE:
-        await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
-    else:
-        await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+    try:
+        if JOIN_IMAGE:
+            await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+        else:
+            await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+    except:
+        pass
     await add_user_2(r.from_user.id)
