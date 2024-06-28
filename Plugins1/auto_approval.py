@@ -38,6 +38,6 @@ async def cjr(_: Client, r):
             await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
         else:
             await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
-    except:
-        pass
+    except Exception as e:
+        print(e)
     await add_user_2(r.from_user.id)
