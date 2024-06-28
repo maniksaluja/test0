@@ -13,15 +13,12 @@ from Database.encr import get_encr
 import asyncio
 from main import app1
 
-# members = {} # {chat_id: [user_id]}
+members = {FSUB_1: [], FSUB_2: []} # {chat_id: [user_id]}
 
 FSUB = [FSUB_1, FSUB_2]
 
-"""
 @Client.on_chat_member_updated(filters.chat(FSUB))
 async def cmufunc(_, cmu):
-    if not cmu.chat.id in members:
-        return
     joined = cmu.new_chat_member and not cmu.old_chat_member
     left = cmu.old_chat_member and not cmu.new_chat_member
     if joined:
@@ -31,29 +28,18 @@ async def cmufunc(_, cmu):
             members[cmu.chat.id].remove(cmu.from_user.id)
         except:
             pass
-"""
         
 async def check_fsub(user_id: int) -> bool:
     for y in FSUB:
-        try:
-            x = await tryer(app1.get_chat_member, y, user_id)
-            if not x.status.name in ["ADMINISTRATOR", "OWNER", "MEMBER"]:
+        if not user_id in members[y]:
+            try:
+                x = await tryer(app1.get_chat_member, y, user_id)
+                if not x.status.name in ["ADMINISTRATOR", "OWNER", "MEMBER"]:
+                    return False
+            except:
                 return False
-        except:
-            return False
+            members[y].append(user_id)
     return True
-
-"""
-async def init_task():
-    for x in FSUB:
-        lis = []
-        async for y in app.get_chat_members(x):
-            lis.append(y.user.id)
-        members[x] = lis
-        print(len(lis))
-
-asyncio.create_task(init_task())
-"""
 
 me = None
 chats = []
