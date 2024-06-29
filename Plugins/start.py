@@ -11,7 +11,7 @@ from templates import AUTO_DELETE_TEXT, START_MESSAGE, START_MESSAGE_2, TRY_AGAI
 from .block import block_dec
 from Database.encr import get_encr
 import asyncio
-from main import app1
+from main import app
 
 members = {FSUB_1: [], FSUB_2: []} # {chat_id: [user_id]}
 
@@ -33,7 +33,7 @@ async def check_fsub(user_id: int) -> bool:
     for y in FSUB:
         if not user_id in members[y]:
             try:
-                x = await tryer(app1.get_chat_member, y, user_id)
+                x = await tryer(app.get_chat_member, y, user_id)
                 if not x.status.name in ["ADMINISTRATOR", "OWNER", "MEMBER"]:
                     return False
             except:
