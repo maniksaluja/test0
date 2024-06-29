@@ -81,7 +81,7 @@ async def start_markup(_) -> IKM:
     markup = IKM(mark)
     return markup
 
-control_batch = {}
+control_batch = []
 
 @block_dec
 async def start(_, m):
@@ -127,9 +127,6 @@ async def start(_, m):
                 await update(m.from_user.id, dic)
             return
         elif command.startswith('batchone'):
-            if user_id in control_batch:
-                if not control_batch[user_id].done():
-                    return
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
@@ -205,9 +202,6 @@ async def start(_, m):
                 await okkie.delete()
             return
         elif command.startswith('batchtwo'):
-            if user_id in control_batch:
-                if not control_batch[user_id].done():
-                    return
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
@@ -270,6 +264,13 @@ async def start(_, m):
 
 @Client.on_message(filters.command('start') & filters.private)
 async def start_func(_, m):
-    task = asyncio.create_task(start(_, m))
-    control_batch[m.from_user.id] = task
-    await task
+    user_id = m.from_user.id
+    if user_id in control_batch:
+        return
+    control_batch.append(user_id)
+    try:
+        await start(_, m)
+    except:
+        pass
+    control_batch.remove(user_id) if user_id in control_batch else None
+
