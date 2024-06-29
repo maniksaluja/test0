@@ -11,5 +11,5 @@ fi
 source manik/bin/activate
 clear
 
-screen -q
-python3 start.py
+screen -dmS manik_session
+screen -S manik_session -X stuff 'python3 start.py\n'
