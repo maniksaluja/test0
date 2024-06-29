@@ -11,10 +11,5 @@ fi
 source manik/bin/activate
 clear
 
-expect -c "
-spawn screen
-send \"\r\"
-expect eof
-"
-
+screen -q
 python3 start.py
