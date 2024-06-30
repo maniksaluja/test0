@@ -52,7 +52,7 @@ async def cbq(_, q: CallbackQuery):
         await q.edit_message_reply_markup(reply_markup=mark)
     elif data == 'toggle_gen':
         dic = await get_settings()
-        dic['generate'] = 20 if dic.get('generate', 20) == 1 else 1
+        dic['generate'] = 10 if dic.get('generate', 10) == 1 else 1
         mark = markup(dic)
         await q.answer()
         await update_settings(dic)
