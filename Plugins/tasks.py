@@ -6,6 +6,7 @@ from time import time
 from main import app
 from .encode_decode import decrypt, Char2Int
 from templates import POST_DELETE_TEXT
+from . import tryer
 
 async def task():
     if AUTO_DELETE_TIME == 0:
@@ -29,8 +30,8 @@ async def task():
                     print(txt)
                     to_del.append(z)
                     try:
-                        await app.delete_messages(i, id_to_del),
-                        await app.edit_message_text(i, id_to_edit, txt, reply_markup=butt)
+                        await tryer(app.delete_messages, i, id_to_del),
+                        await tryer(app.edit_message_text, i, id_to_edit, txt, reply_markup=butt)
                     except:
                         pass
             for to_d in to_del:
