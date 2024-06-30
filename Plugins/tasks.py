@@ -26,12 +26,11 @@ async def task():
                     else:
                         count = Char2Int(decrypt(dic[z][2].split('batch')[1][3:]).split('|')[1])
                     txt = POST_DELETE_TEXT.format(count)
+                    print(txt)
                     to_del.append(z)
                     try:
-                        await asyncio.gather(
-                            app.delete_messages(i, id_to_del),
-                            app.edit_message_text(i, id_to_edit, txt, reply_markup=butt)
-                        )
+                        await app.delete_messages(i, id_to_del),
+                        await app.edit_message_text(i, id_to_edit, txt, reply_markup=butt)
                     except:
                         pass
             for to_d in to_del:
