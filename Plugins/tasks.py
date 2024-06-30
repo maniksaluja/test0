@@ -27,7 +27,6 @@ async def task():
                     else:
                         count = Char2Int(decrypt(dic[z][2].split('batch')[1][3:]).split('|')[1])
                     txt = POST_DELETE_TEXT.format(count)
-                    print(txt)
                     to_del.append(z)
                     try:
                         await tryer(app.delete_messages, i, id_to_del),
