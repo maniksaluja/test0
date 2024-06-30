@@ -10,7 +10,7 @@ MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002119403779'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '7150728058'))
-LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002099961365') # Keep it Empty if no Log Channel  
+LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002227717986') # Keep it Empty if no Log Channel  
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '18000')) # Enter time in seconds, keep it 0 for disabling.
 
