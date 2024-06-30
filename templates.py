@@ -10,7 +10,7 @@ LINK_GEN = """
 """
 USELESS_MESSAGE = "𓆩𝗘𝗥𝗥𝗢𝗥 𝗙𝗢𝗨𝗡𝗗𓆪ꪾ\n<b>𝘗𝘭𝘦𝘢𝘴𝘦 𝘋𝘰𝘯'𝘵 𝘚𝘦𝘯𝘥 𝘜𝘯𝘸𝘢𝘯𝘵𝘦𝘥 𝘔𝘦𝘴𝘴𝘢𝘨𝘦𝘴</b>\n\n♛ 𝙏𝙝𝙖𝙣𝙠𝙔𝙤𝙪 ♛\n𝘾𝙝𝙚𝙘𝙠 𝙊𝙐𝙏 𝙊𝙛𝙛𝙞𝙘𝙞𝙖𝙡 𝘾𝙝𝙖𝙣𝙣𝙚𝙡 𖡦"
 LEAVE_MESSAGE = "<pre>Hey Why Are You Leaving  ME Please Don't Go I am Useless Without You🥹😢</pre>\n\n\n<pre>If Any Problem then Talk To Me \nBUT don't leave Me 😭💔</pre>\n\n𝗠𝗬 𝗧𝗚 𝗜𝗗 : @CuteGirlTG"
-AUTO_DELETE_TEXT = " **•This Will Be AUTO DELETED IN {}\n╼╾╼╾╼╾╼⊰☝🏻 ⊱╾╼╾╼╾╼╾\n ☛ WHY?~  Due To CopyRights.** "
+AUTO_DELETE_TEXT = " **•This Will Be AUTO DELETED IN {}\n╼╾╼╾╼╾╼⊰☝🏻⊱╾╼╾╼╾╼╾\n ☛ WHY?~  Due To CopyRights.** "
 POST_DELETE_TEXT = """ **EXTREMELY SORRY BUT!!!!!
 ╼╾╼╾╼╾╼⊰𝘦𝘱 {} ⊱╾╼╾╼╾╼╾
 ❖MEDIEA SUCCESSFULLY DELETED** """
