@@ -11,4 +11,4 @@ async def get_settings():
     x = await db.find_one({'settings': 69})
     if x:
         return x['actual_settings']
-    return {'auto_approval': False, 'join': False, 'leave': False, 'image': False, 'generate': 20, 'auto_save': False, 'logs': True}
+    return {'auto_approval': False, 'join': False, 'leave': False, 'image': False, 'generate': 10, 'auto_save': False, 'logs': True}
