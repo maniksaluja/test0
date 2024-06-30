@@ -37,7 +37,7 @@ def markup(dic):
             ],
             [
                 IKB('𝘈𝘶𝘵𝘰 𝘎𝘦𝘯𝘦𝘳𝘢𝘵𝘦', callback_data='answer'),
-                IKB(dic.get('generate', 20), callback_data='toggle_gen')
+                IKB(dic.get('generate', 10), callback_data='toggle_gen')
             ]
         ]
     )
