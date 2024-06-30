@@ -117,9 +117,9 @@ async def start(_, m):
                 msg = await _.get_messages(DB_CHANNEL_2_ID, Char2Int(spl[2]))
             await std.delete()
             if not prem:
-                ok = await msg.copy(m.from_user.id, protect_content=True)
+                ok = await msg.copy(m.from_user.id, caption=None, reply_markup=None, protect_content=True)
             else:
-                ok = await msg.copy(m.from_user.id)
+                ok = await msg.copy(m.from_user.id, caption=None, reply_markup=None)
             if AUTO_DELETE_TIME != 0:
                 ok1 = await ok.reply(AUTO_DELETE_TEXT.format(AUTO_DELETE_STR))
                 dic = await get(m.from_user.id)
@@ -176,7 +176,7 @@ async def start(_, m):
                         continue
                     if x.empty:
                         continue
-                    gg = await tryer(x.copy, m.from_user.id, protect_content=True)
+                    gg = await tryer(x.copy, m.from_user.id, caption=None, reply_markup=None, protect_content=True)
                     haha.append(gg)
                     await asyncio.sleep(1)
             else:
@@ -185,7 +185,7 @@ async def start(_, m):
                         continue
                     if x.empty:
                         continue
-                    gg = await tryer(x.copy, m.from_user.id)
+                    gg = await tryer(x.copy, m.from_user.id, caption=None, reply_markup=None)
                     haha.append(gg)
                     await asyncio.sleep(1)
                     # tasks.append(asyncio.create_task(x.copy(m.from_user.id)))
@@ -234,7 +234,7 @@ async def start(_, m):
                         continue
                     if x.empty:
                         continue
-                    gg = await tryer(x.copy, m.from_user.id, protect_content=True)
+                    gg = await tryer(x.copy, m.from_user.id, caption=None, reply_markup=None, protect_content=True)
                     haha.append(gg)
                     await asyncio.sleep(1)
             else:
@@ -243,7 +243,7 @@ async def start(_, m):
                         continue
                     if x.empty:
                         continue
-                    gg = await tryer(x.copy, m.from_user.id)
+                    gg = await tryer(x.copy, m.from_user.id, caption=None, reply_markup=None)
                     haha.append(gg)
                     await asyncio.sleep(1)
                     # tasks.append(asyncio.create_task(x.copy(m.from_user.id)))
