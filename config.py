@@ -2,8 +2,8 @@ from os import getenv
 
 API_ID = int(getenv('API_ID', '29321225'))
 API_HASH = getenv('API_HASH', '9af2b4ce5315e0222d0b30eba7b0905d')
-BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAFtJUUvH9zKFUrV79vP5Rh4xUOFLxcVGqE')
-BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGhIdnbcplS43a1yBlBkF9qQB9hPX5HkXE')
+BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAEEnrMwr6BVTrq-FqLU5N2ym4pgxX6z71k')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAF8F0vnLN3y8nCLMYXCs93eaaFpui7eTug')
 
 SUDO_USERS = getenv('SUDO_USERS', '6604279354') # Example: '1234 6789'
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4RswM@cluster0.vn1hama.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
@@ -14,7 +14,7 @@ LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002227717986') # Keep it Empty if n
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '18000')) # Enter time in seconds, keep it 0 for disabling.
 
-FSUB_1 = -1002099961365
+FSUB_1 = -1002223621601
 FSUB_2 = -1001999286144
 
 MUST_VISIT_LINK = "https://t.me/Utra_XYZ/34"
