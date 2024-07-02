@@ -14,7 +14,7 @@ def Char2Int(x: str) -> int:
     return int(txt)
 
 def encrypt(txt: str) -> str:
-    return base64.b64encode(txt.encode('utf-8')).decode('utf-8')
+    return base64.b64encode(txt.encode('utf-8')).decode('utf-8').rstrip('=')
 
 def decrypt(txt: str) -> str:
     x = len(txt) % 4
