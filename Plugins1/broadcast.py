@@ -1,4 +1,4 @@
-from Database.users import get_users_2
+from Database.users import get_users_2, del_user_2
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 from config import SUDO_USERS
@@ -27,8 +27,10 @@ async def send_text(client, message):
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except UserIsBlocked:
+                await del_user_2(chat_id)
                 blocked += 1
             except InputUserDeactivated:
+                await del_user_2(chat_id)
                 deleted += 1
             except:
                 unsuccessful += 1
