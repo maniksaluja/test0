@@ -43,3 +43,9 @@ async def get_users() -> list[int]:
 async def get_users_count() -> int:
     x = db1.find()
     return len(await x.to_list(length=None))
+
+async def del_user(user_id: int) -> None:
+    await db1.delete_one({'user_id': user_id})
+
+async def del_user_2(user_id: int) -> None:
+    await db2.delete_one({'user_id': user_id})
