@@ -17,11 +17,11 @@ AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '18000')) # Enter time in seco
 FSUB_1 = -1002223621601
 FSUB_2 = -1001999286144
 
-MUST_VISIT_LINK = "https://t.me/Utra_XYZ/34"
+MUST_VISIT_LINK = "https://t.me/Ultra_XYZ/4"
 
 LINK_GENERATE_IMAGE = getenv('LINK_GENERATE_IMAGE', 'https://graph.org/file/a1cce5b8533180c2f0029.jpg')
 
-TUTORIAL_LINK = getenv('TUTORIAL_LINK', 'https://t.me/Utra_XYZ/32')
+TUTORIAL_LINK = getenv('TUTORIAL_LINK', 'https://t.me/Ultra_XYZ/2')
 
 CONNECT_TUTORIAL_LINK = getenv('CONNECT_TUTORIAL_LINK', 'https://t.me/Terabox_Sharing_Bot?start=batchoneaWZkYS1pZmRjfGhoZg==')
 SU_IMAGE = "https://graph.org/file/2342d37844afd1b9b96c0.jpg"
