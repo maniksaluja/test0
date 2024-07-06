@@ -8,7 +8,7 @@ from .join_leave import get_chats
 
 FSUB = [FSUB_1, FSUB_2]
 
-@Client.on_chat_join_request(filters.chat(FSUB))
+@Client.on_chat_join_request(filters.chat(FSUB_1))
 async def cjr(_: Client, r):
     link = (await get_chats(_))[1].invite_link
     markup = IKM(
@@ -31,13 +31,11 @@ async def cjr(_: Client, r):
     )
     if not settings["join"]:
         return
-    if r.chat.id == FSUB_2:
-        return await add_user_2(r.from_user.id)
     try:
         if JOIN_IMAGE:
             await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
         else:
             await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+        await add_user_2(r.from_user.id)
     except Exception as e:
         print(e)
-    await add_user_2(r.from_user.id)
