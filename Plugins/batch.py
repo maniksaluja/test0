@@ -77,7 +77,7 @@ async def end(_, m):
     dest_ids_2.append(new.id)
   if all_vid:
     duration = sum([x.video.duration for x in ms])
-    duration = "i " + alpha_grt(duration)
+    duration = "⋞⋮⋟" + alpha_grt(duration)
   else:
     duration = ''
   cur = await incr_count()
