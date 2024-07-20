@@ -18,6 +18,7 @@ async def send_text(client, message):
         unsuccessful = 0
         
         pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
+        err = None
         for chat_id in query:
             try:
                 await broadcast_msg.copy(chat_id)
@@ -32,8 +33,9 @@ async def send_text(client, message):
             except InputUserDeactivated:
                 await del_user_2(chat_id)
                 deleted += 1
-            except:
+            except Exception as e:
                 unsuccessful += 1
+                err = e
                 pass
             total += 1
         
@@ -43,7 +45,9 @@ Total Users: <code>{total}</code>
 Successful: <code>{successful}</code>
 Blocked Users: <code>{blocked}</code>
 Deleted Accounts: <code>{deleted}</code>
-Unsuccessful: <code>{unsuccessful}</code></b>"""
+Unsuccessful: <code>{unsuccessful}</code></b>
+
+Error: {err}"""
         
         return await pls_wait.edit(status)
 
