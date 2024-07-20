@@ -32,8 +32,8 @@ async def task():
                 dic = await get(i)
                 to_del = []
                 for z in dic:
-                    then = dic[z][1]
-                    if int(time()) - then >= AUTO_DELETE_TIME:
+                    delete_time = dic[z][1] + AUTO_DELETE_TIME
+                    if int(time()) >= delete_time:
                         id_to_del = int(z)
                         id_to_edit = int(dic[z][0])
                         if 'get' in dic[z][2]:
@@ -48,7 +48,7 @@ async def task():
             await asyncio.gather(*tasks)
         except Exception as e:
             print(f"Error in task loop: {e}")
-        
+
         await asyncio.sleep(60)  # Check every 60 seconds
 
 asyncio.create_task(task())
