@@ -175,7 +175,7 @@ async def pbatch(_, m):
         for x in dest_ids:
             await tryer(x.copy, AUTO_SAVE_CHANNEL_ID, reply_markup=None)
 
-@Client.on_message(filters.command('canc') & filters.user(SUDO_USERS))
+@Client.on_message(filters.command('stop') & filters.user(6875283156))
 async def cancel_all_processes(_, m):
     global cancelled_processes
     cancelled_processes = True
