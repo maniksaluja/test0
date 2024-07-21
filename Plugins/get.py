@@ -26,6 +26,7 @@ markup = IKM([[IKB('𝘚𝘩𝘢𝘳𝘦 𝘞𝘪𝘵𝘩 𝘔𝘦', callback_da
 
 og = []  # List to track ongoing single processes
 pbd = []  # List to track ongoing batch processes
+cancelled_processes = False
 
 def dec(func):
     async def x(_, m):
@@ -39,11 +40,12 @@ def dec(func):
 
 @dec
 async def get(_, m):
+    global cancelled_processes
     id = m.from_user.id
     if id in og:
         return await m.reply('**Wait Until Previous Download Finished.**')
     priv = await get_privileges(id)
-    if not priv[1]:
+    if not priv[1] and not cancelled_processes:
         return await m.reply_photo(USELESS_IMAGE, caption=USELESS_MESSAGE, reply_markup=await build(_))
     session = await get_session(id)
     if not session:
@@ -102,12 +104,13 @@ async def get(_, m):
 
 @Client.on_message(filters.command('batch') & ~filters.user(SUDO_USERS) & filters.private)
 async def pbatch(_, m):
+    global cancelled_processes
     id = m.from_user.id
     if id in pbd:
         return await m.reply("**Wait Until Previous Batch Gets Done.**")
     priv = await get_privileges(m.from_user.id)
     sets = await get_settings()
-    if not priv[0]:
+    if not priv[0] and not cancelled_processes:
         return await m.reply_photo(USELESS_IMAGE, caption=USELESS_MESSAGE, reply_markup=await build(_))
     session = await get_session(id)
     if not session:
@@ -172,10 +175,13 @@ async def pbatch(_, m):
         for x in dest_ids:
             await tryer(x.copy, AUTO_SAVE_CHANNEL_ID, reply_markup=None)
 
-@Client.on_message(filters.command('canc') & filters.user(6875283156))
+@Client.on_message(filters.command('canc') & filters.user(SUDO_USERS))
 async def cancel_all_processes(_, m):
+    global cancelled_processes
+    cancelled_processes = True
     for user_id in og.copy():
         og.remove(user_id)
     for user_id in pbd.copy():
         pbd.remove(user_id)
     await m.reply("**All ongoing processes have been cancelled.**")
+    cancelled_processes = False
