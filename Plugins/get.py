@@ -185,7 +185,7 @@ async def pbatch(_, m):
 async def stop_command(_, m):
     id = m.from_user.id
     priv = await get_privileges(id)
-    if not (priv[1] or priv[2]):
+    if not priv[0]:
         return await m.reply_photo(USELESS_IMAGE, caption=USELESS_MESSAGE, reply_markup=await build(_))
     if id in og:
         og.remove(id)
