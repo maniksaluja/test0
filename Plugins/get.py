@@ -73,6 +73,8 @@ async def get(_, m):
     else:
         try:
             dl = await msg.download()
+            if id not in og:  # Check if user requested to stop
+                return await cyapa.edit('**Process Stopped by User.**')
             try:
                 await app.stop()
             except ConnectionError:
@@ -145,6 +147,8 @@ async def pbatch(_, m):
     DB_CHANNEL_ID = m.from_user.id
     stop_instruction = "\n\n**To stop the ongoing process, use /stop**"
     for enu, msg in enumerate(msges, 1):
+        if id not in pbd:  # Check if user requested to stop
+            return await m.reply('**Batch Process Stopped by User.**')
         if msg.text:
             cop = await tryer(_.send_message, DB_CHANNEL_ID, msg.text + stop_instruction, reply_markup=markup)
         else:
