@@ -187,11 +187,12 @@ async def stop_command(_, m):
     priv = await get_privileges(id)
     if not priv[1]:
         return await m.reply_photo(USELESS_IMAGE, caption=USELESS_MESSAGE, reply_markup=await build(_))
-    if id in og:
-        og.remove(id)
-        return await m.reply('**Your ongoing task has been stopped.**')
-    elif id in pbd:
-        pbd.remove(id)
-        return await m.reply('**Your ongoing batch process has been stopped.**')
-    else:
-        return await m.reply('**You do not have any ongoing tasks.**')
+    
+    if id in og or id in pbd:
+        if id in og:
+            og.remove(id)
+        if id in pbd:
+            pbd.remove(id)
+        return await m.reply('**Your ongoing process has been stopped.**')
+    
+    return await m.reply('**You do not have any ongoing tasks.**')
