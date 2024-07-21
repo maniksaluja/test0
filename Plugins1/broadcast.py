@@ -17,7 +17,7 @@ async def send_text(client, message):
         deleted = 0
         unsuccessful = 0
         
-        pls_wait = await message.reply("<i>Broadcasting Message.. This will take some time</i>")
+        pls_wait = await message.reply("<i>Broadcasting Message... This will take some time</i>")
         err = None
         for chat_id in query:
             try:
@@ -28,10 +28,17 @@ async def send_text(client, message):
                 try:
                     await broadcast_msg.copy(chat_id)
                     successful += 1
+                except UserIsBlocked:
+                    await del_user_2(chat_id)
+                    blocked += 1
+                    continue  # Skip to the next user
+                except InputUserDeactivated:
+                    await del_user_2(chat_id)
+                    deleted += 1
+                    continue  # Skip to the next user
                 except Exception as e:
                     unsuccessful += 1
                     err = e
-                    pass
             except UserIsBlocked:
                 await del_user_2(chat_id)
                 blocked += 1
@@ -41,7 +48,6 @@ async def send_text(client, message):
             except Exception as e:
                 unsuccessful += 1
                 err = e
-                pass
         
         status = f"""<b><u>Broadcast Completed</u></b>
         
