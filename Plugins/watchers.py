@@ -44,7 +44,7 @@ async def cwf(_: Client, m: Message):
             return
     if not m.from_user.id in SUDO_USERS:
         if m.text:
-            if not m.text.lower().startswith(('/start', '/terminate', '/connect', '/bot', '..', '/batch', '/id')):
+            if not m.text.lower().startswith(('/start', '/terminate', '/connect', '/bot', '..', '/batch', '/id', '/stop')):
                 markup = await build(_)
                 if USELESS_IMAGE:
                     await m.reply_photo(USELESS_IMAGE, caption=USELESS_MESSAGE, reply_markup=markup)
