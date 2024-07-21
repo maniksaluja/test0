@@ -22,8 +22,6 @@ import time
 from . import build
 from main import ClientLike
 
-markup = IKM([[IKB('𝘚𝘩𝘢𝘳𝘦 𝘞𝘪𝘵𝘩 𝘔𝘦', callback_data='sharewithme')]])
-
 og = []  # List to track ongoing single processes
 pbd = []  # List to track ongoing batch processes
 cancelled_processes = False
@@ -71,7 +69,7 @@ async def get(_, m):
     msg = await app.get_messages(channel, msg_id)
     settings = await get_settings()
     if msg.text:
-        cop = await m.reply(msg.text, reply_markup=markup)
+        cop = await m.reply(msg.text)
     else:
         try:
             dl = await msg.download()
@@ -80,13 +78,13 @@ async def get(_, m):
             except ConnectionError:
                 pass
             if msg.document:
-                cop = await m.reply_document(dl, caption=msg.caption, reply_markup=markup)
+                cop = await m.reply_document(dl, caption=msg.caption)
             elif msg.video:
-                cop = await m.reply_video(dl, caption=msg.caption, reply_markup=markup)
+                cop = await m.reply_video(dl, caption=msg.caption)
             elif msg.photo:
-                cop = await m.reply_photo(dl, caption=msg.caption, reply_markup=markup)
+                cop = await m.reply_photo(dl, caption=msg.caption)
             elif msg.animation:
-                cop = await m.reply_animation(dl, caption=msg.caption, reply_markup=markup)
+                cop = await m.reply_animation(dl, caption=msg.caption)
             else:
                 return await cyapa.edit('This Link can\'t be accessed.')
             os.remove('downloads/' + dl.split('/')[-1])
@@ -145,18 +143,18 @@ async def pbatch(_, m):
     DB_CHANNEL_ID = m.from_user.id
     for enu, msg in enumerate(msges, 1):
         if msg.text:
-            cop = await tryer(_.send_message, DB_CHANNEL_ID, msg.text, reply_markup=markup)
+            cop = await tryer(_.send_message, DB_CHANNEL_ID, msg.text)
         else:
             try:
                 dl = await msg.download()
                 if msg.document:
-                    cop = await tryer(_.send_document, DB_CHANNEL_ID, dl, caption=msg.caption, reply_markup=markup)
+                    cop = await tryer(_.send_document, DB_CHANNEL_ID, dl, caption=msg.caption)
                 elif msg.video:
-                    cop = await tryer(_.send_video, DB_CHANNEL_ID, dl, caption=msg.caption, reply_markup=markup)
+                    cop = await tryer(_.send_video, DB_CHANNEL_ID, dl, caption=msg.caption)
                 elif msg.photo:
-                    cop = await tryer(_.send_photo, DB_CHANNEL_ID, dl, caption=msg.caption, reply_markup=markup)
+                    cop = await tryer(_.send_photo, DB_CHANNEL_ID, dl, caption=msg.caption)
                 elif msg.animation:
-                    cop = await tryer(_.send_animation, DB_CHANNEL_ID, dl, caption=msg.caption, reply_markup=markup)  
+                    cop = await tryer(_.send_animation, DB_CHANNEL_ID, dl, caption=msg.caption)  
                 os.remove('downloads/' + dl.split('/')[-1])
             except Exception as e:
                 pass
