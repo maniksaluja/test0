@@ -5,11 +5,17 @@ from Database.settings import get_settings
 from Database.users import add_user_2
 from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
 from .join_leave import get_chats
+from Database.block import is_blocked
 
 FSUB = [FSUB_1, FSUB_2]
 
 @Client.on_chat_join_request(filters.chat(FSUB_1))
 async def cjr(_: Client, r):
+    # Check if the user is blocked
+    if is_blocked(r.from_user.id):
+        await _.decline_chat_join_request(r.chat.id, r.from_user.id)
+        return
+    
     link = (await get_chats(_))[1].invite_link
     markup = IKM(
       [
@@ -25,6 +31,7 @@ async def cjr(_: Client, r):
     settings = await get_settings()
     if not settings['auto_approval']:
         return
+    
     await _.approve_chat_join_request(
         r.chat.id,
         r.from_user.id
