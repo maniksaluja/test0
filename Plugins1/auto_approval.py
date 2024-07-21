@@ -13,7 +13,7 @@ FSUB = [FSUB_1, FSUB_2]
 @Client.on_chat_join_request(filters.chat(FSUB_1))
 async def cjr(client: Client, r):
     try:
-        if is_blocked(r.from_user.id):
+        if await is_blocked(r.from_user.id):
             await client.decline_chat_join_request(r.chat.id, r.from_user.id)
             return
 
@@ -48,12 +48,10 @@ async def cjr(client: Client, r):
             await add_user_2(r.from_user.id)
         
         except FloodWait as e:
-            print(f"FloodWait: Need to wait for {e.x} seconds.")
+            pass
         except BadRequest as e:
             if '400 HIDE.REQUEST' in str(e) or '400 PEER_FLOOD' in str(e) or '400 USER_IS_BLOCKED' in str(e):
                 return
-            else:
-                print(f"BadRequest: {e}")
 
-    except Exception as e:
-        print(f"Error handling join request: {e}")
+    except Exception:
+        pass
