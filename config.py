@@ -2,10 +2,10 @@ from os import getenv
 
 API_ID = int(getenv('API_ID', '29321225'))
 API_HASH = getenv('API_HASH', '9af2b4ce5315e0222d0b30eba7b0905d')
-BOT_TOKEN = getenv('BOT_TOKEN', '7427686742:AAEN6SEp9MrDEZUuphUAaRt3sJZaaNC5V6Y')
-BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '6867248619:AAH5iMHJrxGgTpVHGE7t9nK5VzAXqYhVmiA')
+BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAGCj0Ii3BjqCr5auxoSZUJZxKISr6KYr4c')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAHs87ic7Z1WDUyPmPANGUYBdQTXV-8gM_c')
 
-SUDO_USERS = getenv('SUDO_USERS', '6604279354 6919722801') # Example: '1234 6789'
+SUDO_USERS = getenv('SUDO_USERS', '6604279354') # Example: '1234 6789'
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://ishitaroy657boobs:bUE7wTKcdDabJkVR@geektyper.gzrindn.mongodb.net/')
 
 CORN = getenv('CORN', 'https://graph.org/file/db0f9419cde5eb1238e6a.mp4')
