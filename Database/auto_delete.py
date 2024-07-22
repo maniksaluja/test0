@@ -10,7 +10,7 @@ async def get(user_id):
     if x:
         return x['dic']
     return {}
-    
+
 async def get_all() -> list[int]:
     x = db.find()
     x = await x.to_list(length=None)
