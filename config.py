@@ -6,7 +6,7 @@ BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAGCj0Ii3BjqCr5auxoSZUJZxKISr6KYr4c'
 BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAHs87ic7Z1WDUyPmPANGUYBdQTXV-8gM_c')
 
 SUDO_USERS = getenv('SUDO_USERS', '6604279354') # Example: '1234 6789'
-MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://ishitaroy657boobs:bUE7wTKcdDabJkVR@geektyper.gzrindn.mongodb.net/')
+MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4RswM@cluster0.vn1hama.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 CORN = getenv('CORN', 'https://graph.org/file/db0f9419cde5eb1238e6a.mp4')
 
