@@ -86,7 +86,7 @@ async def cwf(_, m):
             dic.pop(id)
             return
         
-        caption = f"I had sent an OTP to the number {m.text} through Telegram App 💌\n\nPlease enter the OTP in the format 1 2 3 4 5 (provided white space between numbers)"
+        caption = f"**I Had Sent An OTP To Your Telegram Account** \n<pre>IF You Don't Know How to put OTP Than Watch' Video</pre>> \n• ENTER YOUR OTP :"
         await m.reply_video(video_path, caption=caption)
         
         # Remove the video file after sending
