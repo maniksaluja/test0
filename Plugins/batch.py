@@ -16,99 +16,90 @@ dic = {}
 me = None
 
 class bkl:
-    @staticmethod
-    def done():
-        return True
+  def done():
+    return True
 
-TASK = bkl()
+TASK = bkl
 
 def get_TASK():
-    return TASK.done()
+  return TASK.done()
 
-async def get_me(client):
-    global me
-    if not me:
-        me = await client.get_me()
-    return me
-
+async def get_me(_):
+  global me
+  if not me:
+    me = await _.get_me()
+  return me
+  
 def in_batch(user_id):
-    return user_id in dic or not get_TASK()
+  return user_id in dic or not get_TASK()
 
 @Client.on_message(filters.command('b') & filters.user(SUDO_USERS) & filters.private)
-async def batch(client, message):
-    if message.from_user.id in dic:
-        return await message.reply('**Batch Under Process. Use /cancel to stop!**')
-    if TASK and not TASK.done():
-        return await message.reply('Wait until the current batch is done.')
-    dic[message.from_user.id] = []
-    await message.reply('**OK. You can now batch links. When done, use /end**', quote=True)
+async def batch(_, m):
+  if m.from_user.id in dic:
+    return await m.reply('**Batch UnderProcess Use /cancel For Stop!!.** ')
+  if TASK and not TASK.done():
+    return await m.reply('Wait Until The Batch Gets Done.')
+  dic[m.from_user.id] = []
+  await m.reply('**OKAY Now I Can Make Batch Link When You Done Use /end **', quote=True)
 
-async def batch_cwf(client, message):
-    if message.text and message.text.startswith('/'):
-        return
-    if message.from_user.id in dic:
-        dic[message.from_user.id].append(message)
+
+async def batch_cwf(_, m):
+  if m.text:
+    if m.text.startswith('/'):
+      return
+  if m.from_user.id in dic:
+    dic[m.from_user.id].append(m)
 
 @Client.on_message(filters.command('cancel') & filters.user(SUDO_USERS) & filters.private)
-async def cancel(client, message):
-    if message.from_user.id not in dic:
-        return await message.reply('Nothing to cancel.')
-    dic.pop(message.from_user.id)
-    await message.reply('Batch cancelled.')
+async def cancel(_, m):
+  if not m.from_user.id in dic:
+    return await m.reply('Nothing to cancel.')
+  dic.pop(m.from_user.id)
+  await m.reply('Batch Cancelled.')
 
-async def process_batch_messages(client, messages, db_channel_id):
-    dest_ids = []
-    for msg in messages:
-        new_msg = await tryer(msg.copy, db_channel_id, caption="#batch")
-        dest_ids.append(new_msg.id)
-    return dest_ids
-
-async def end(client, message):
-    if message.from_user.id not in dic:
-        return
-    ms = dic[message.from_user.id]
-    dic.pop(message.from_user.id)
-    if not ms:
-        return
-    iffff = await message.reply("**Processing... This might take a few minutes.**")
-    
-    tasks = [
-        process_batch_messages(client, ms, DB_CHANNEL_ID),
-        process_batch_messages(client, ms, DB_CHANNEL_2_ID)
-    ]
-    
-    dest_ids, dest_ids_2 = await asyncio.gather(*tasks)
-    
-    all_vid = all(x.video for x in ms)
-    duration = "⋞⋮⋟" + alpha_grt(sum(x.video.duration for x in ms)) if all_vid else ''
-    
-    cur = await incr_count()
-    encr = encrypt(f'{Int2Char(dest_ids[0])}-{Int2Char(dest_ids[-1])}|{Int2Char(cur)}')
-    encr_2 = encrypt(f'{Int2Char(dest_ids_2[0])}-{Int2Char(dest_ids_2[-1])}|{Int2Char(cur)}')
-    await update(encr, encr_2)
-    
-    link = f'https://t.me/{(await get_me(client)).username}?start=batchone{encr}'
-    txt = LINK_GEN.format(f'{cur}', duration, link)
-    markup = IKM([[IKB('Share', url=link)]])
-    
-    settings = await get_settings()
-    await iffff.delete()
-    
-    if LINK_GENERATE_IMAGE and settings['image']:
-        await message.reply_photo(LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup, quote=True)
-        if LOG_CHANNEL_ID and settings.get('logs', True):
-            await client.send_photo(LOG_CHANNEL_ID, LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup)
-    else:
-        await message.reply(txt, reply_markup=markup, quote=True)
-        if LOG_CHANNEL_ID and settings.get('logs', True):
-            await client.send_message(LOG_CHANNEL_ID, txt, reply_markup=markup)
+async def end(_, m):
+  if not m.from_user.id in dic:
+    return
+  ms = dic[m.from_user.id]
+  dic.pop(m.from_user.id)
+  if not ms:
+    return
+  iffff = await m.reply("**It Takes Few Minutes..**")
+  dest_ids = []
+  dest_ids_2 = []
+  all_vid = True
+  for x in ms:
+    if not x.video:
+      all_vid = False
+    new = await tryer(x.copy, DB_CHANNEL_ID, caption="#batch")
+    dest_ids.append(new.id)
+    new = await tryer(x.copy, DB_CHANNEL_2_ID, caption="#batch")
+    dest_ids_2.append(new.id)
+  if all_vid:
+    duration = sum([x.video.duration for x in ms])
+    duration = "⋞⋮⋟" + alpha_grt(duration)
+  else:
+    duration = ''
+  cur = await incr_count()
+  encr = encrypt(f'{Int2Char(dest_ids[0])}-{Int2Char(dest_ids[-1])}|{Int2Char(cur)}')
+  encr_2 = encrypt(f'{Int2Char(dest_ids[0])}-{Int2Char(dest_ids[-1])}|{Int2Char(cur)}')
+  await update(encr, encr_2)
+  link = f'https://t.me/{(await get_me(_)).username}?start=batchone{encr}'
+  txt = LINK_GEN.format(f'{cur}', duration, link)
+  markup = IKM([[IKB('Share', url=link)]])
+  settings = await get_settings()
+  await iffff.delete()
+  if LINK_GENERATE_IMAGE and settings['image']:
+    await m.reply_photo(LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup, quote=True)
+    if LOG_CHANNEL_ID and settings.get('logs', True):
+      await _.send_photo(LOG_CHANNEL_ID, LINK_GENERATE_IMAGE, caption=txt, reply_markup=markup)
+  else:
+    await m.reply(txt, reply_markup=markup, quote=True),
+    if LOG_CHANNEL_ID and settings.get('logs', True):
+      await _.send_message(LOG_CHANNEL_ID, txt, reply_markup=markup)
 
 @Client.on_message(filters.command('end') & filters.user(SUDO_USERS) & filters.private)
-async def endddd(client, message):
-    global TASK
-    TASK = asyncio.create_task(end(client, message))
-    await TASK
-
-@Client.on_message(filters.private)
-async def handle_private_messages(client, message):
-    await batch_cwf(client, message)
+async def endddd(_, m):
+  global TASK
+  TASK = asyncio.create_task(end(_, m))
+  await TASK
