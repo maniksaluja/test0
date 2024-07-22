@@ -67,19 +67,16 @@ async def get(_, m):
     og.append(id)
     msg = await app.get_messages(channel, msg_id)
     settings = await get_settings()
-    stop_instruction = "\n\n**To stop the ongoing process, use /stop**"
     if msg.text:
-        cop = await m.reply(msg.text + stop_instruction, reply_markup=markup)
+        cop = await m.reply(msg.text, reply_markup=markup)
     else:
         try:
             dl = await msg.download()
-            if id not in og:  # Check if user requested to stop
-                return await cyapa.edit('**Process Stopped by User.**')
             try:
                 await app.stop()
             except ConnectionError:
                 pass
-            caption = (msg.caption if msg.caption else '') + stop_instruction
+            caption = msg.caption if msg.caption else ''
             if msg.document:
                 cop = await m.reply_document(dl, caption=caption, reply_markup=markup)
             elif msg.video:
@@ -145,16 +142,15 @@ async def pbatch(_, m):
     m_e = await tryer(m.reply, 'Processing Files...')
     tot = len(msges)
     DB_CHANNEL_ID = m.from_user.id
-    stop_instruction = "\n\n**To stop the ongoing process, use /stop**"
     for enu, msg in enumerate(msges, 1):
         if id not in pbd:  # Check if user requested to stop
             return await m.reply('**Batch Process Stopped by User.**')
         if msg.text:
-            cop = await tryer(_.send_message, DB_CHANNEL_ID, msg.text + stop_instruction, reply_markup=markup)
+            cop = await tryer(_.send_message, DB_CHANNEL_ID, msg.text, reply_markup=markup)
         else:
             try:
                 dl = await msg.download()
-                caption = (msg.caption if msg.caption else '') + stop_instruction
+                caption = msg.caption if msg.caption else ''
                 if msg.document:
                     cop = await tryer(_.send_document, DB_CHANNEL_ID, dl, caption=caption, reply_markup=markup)
                 elif msg.video:
