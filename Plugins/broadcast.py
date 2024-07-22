@@ -30,7 +30,7 @@ async def send_text(client, message):
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except FloodWait as e:
-                await asyncio.sleep(e.x)
+                await asyncio.sleep(e.value)
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except UserIsBlocked:
@@ -75,7 +75,7 @@ async def broadcast(client, message):
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except FloodWait as e:
-                await asyncio.sleep(e.x)
+                await asyncio.sleep(e.value)
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except UserIsBlocked:
