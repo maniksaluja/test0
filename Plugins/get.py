@@ -143,7 +143,7 @@ async def pbatch(_, m):
     tot = len(msges)
     DB_CHANNEL_ID = m.from_user.id
     for enu, msg in enumerate(msges, 1):
-        if id not in pbd:  # Check if user requested to stop
+        if id not in pbd:
             return await m.reply('**Batch Process Stopped by User.**')
         if msg.text:
             cop = await tryer(_.send_message, DB_CHANNEL_ID, msg.text, reply_markup=markup)
@@ -189,6 +189,6 @@ async def stop_command(_, m):
             og.remove(id)
         if id in pbd:
             pbd.remove(id)
-        return await m.reply('**Your ongoing process has been stopped.**')
+        return await m.reply('**This process is cancelled by user.**')
     
     return await m.reply('**You do not have any ongoing tasks.**')
