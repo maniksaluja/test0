@@ -8,7 +8,7 @@ BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCORO
 SUDO_USERS = getenv('SUDO_USERS', '6604279354') # Example: '1234 6789'
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4RswM@cluster0.vn1hama.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
-CORN = getenv('CORN', 'https://graph.org/file/db0f9419cde5eb1238e6a.mp4')
+CORN = getenv('CORN', 'https://graph.org/file/2dda5fee0069e7c7a2fd6.mp4')
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002119403779'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '7150728058'))
