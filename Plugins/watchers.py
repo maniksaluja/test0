@@ -82,7 +82,7 @@ async def cwf(_: Client, m: Message):
     encr = encrypt(f'{Int2Char(res[0].id)}|{Int2Char(count)}|{Int2Char(res[1].id)}')
     link = f'https://t.me/{(await get_me(_)).username}?start=get{encr}'
     if m.video:
-        dur = "⋞⋮" + alpha_grt(m.video.duration)
+        dur = "⋞⋮⋟" + alpha_grt(m.video.duration)
     else:
         dur = ''
     txt = LINK_GEN.format(str(count), dur, link)
