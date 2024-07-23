@@ -65,7 +65,7 @@ async def save(C, M):
     messes = await C.get_messages(M.chat.id, list(range(st, en)))
     count = await incr_count_2()
     cops = []
-    uffie = await tryer(paa.send_message, M.from_user.id, 'Under processing...\n use /stop if stucked ')
+    uffie = await tryer(paa.send_message, M.from_user.id, 'Under processing...')
     for msg in messes:
         if not msg or msg.empty:
             continue 
