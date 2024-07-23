@@ -3,12 +3,10 @@ from os import getenv
 API_ID = int(getenv('API_ID', '29321225'))
 API_HASH = getenv('API_HASH', '9af2b4ce5315e0222d0b30eba7b0905d')
 BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAGCj0Ii3BjqCr5auxoSZUJZxKISr6KYr4c')
-BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCOROy8Q')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAHs87ic7Z1WDUyPmPANGUYBdQTXV-8gM_c')
 
 SUDO_USERS = getenv('SUDO_USERS', '6604279354') # Example: '1234 6789'
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4RswM@cluster0.vn1hama.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-
-CORN = getenv('CORN', 'https://graph.org/file/2dda5fee0069e7c7a2fd6.mp4')
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002119403779'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '7150728058'))
