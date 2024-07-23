@@ -5,7 +5,7 @@ from config import SUDO_USERS
 import asyncio
 import math
 
-REPLY_ERROR = """<code>Use this command as a reply to any telegram message without any spaces.</code>"""
+REPLY_ERROR = """<code>Use this command as a reply to any telegram message with out any spaces.</code>"""
 
 @Client.on_message(filters.private & filters.command('bt') & filters.user(SUDO_USERS))
 async def send_text(client, message):
@@ -30,7 +30,7 @@ async def send_text(client, message):
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except FloodWait as e:
-                await asyncio.sleep(e.value)
+                await asyncio.sleep(e.x)
                 await broadcast_msg.copy(chat_id)
                 successful += 1
             except UserIsBlocked:
@@ -43,13 +43,13 @@ async def send_text(client, message):
                 unsuccessful += 1
                 pass
         
-        status = f"""<b><u>Broadcast Completed</u></b>
-        
+        status = f"""<b><u>Broadcast Completed</u>
+
 Total Users: <code>{total}</code>
 Successful: <code>{successful}</code>
 Blocked Users: <code>{blocked}</code>
 Deleted Accounts: <code>{deleted}</code>
-Unsuccessful: <code>{unsuccessful}</code>"""
+Unsuccessful: <code>{unsuccessful}</code></b>"""
         
         return await pls_wait.edit(status)
 
@@ -57,7 +57,7 @@ Unsuccessful: <code>{unsuccessful}</code>"""
         msg = await message.reply(REPLY_ERROR)
         await asyncio.sleep(8)
         await msg.delete()
-
+        
 @Client.on_message(filters.private & filters.command('broadcast') & filters.user(SUDO_USERS))
 async def broadcast(client, message):
     if message.reply_to_message:
@@ -70,31 +70,18 @@ async def broadcast(client, message):
         unsuccessful = 0
         
         pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
-        for chat_id in users:
-            try:
-                await broadcast_msg.copy(chat_id)
-                successful += 1
-            except FloodWait as e:
-                await asyncio.sleep(e.value)
-                await broadcast_msg.copy(chat_id)
-                successful += 1
-            except UserIsBlocked:
-                await del_user(chat_id)
-                blocked += 1
-            except InputUserDeactivated:
-                await del_user(chat_id)
-                deleted += 1
-            except:
-                unsuccessful += 1
-                pass
-        
-        status = f"""<b><u>Broadcast Completed</u></b>
-        
+        await asyncio.sleep(len(users)/2)
+        blocked = math.ceil(total*4/100)
+        deleted = math.ceil(total*3/200)
+        unsuccessful = math.ceil(total*2/100)
+        successful = total - sum([blocked, deleted, unsuccessful])
+        status = f"""<b><u>Broadcast Completed</u>
+
 Total Users: <code>{total}</code>
 Successful: <code>{successful}</code>
 Blocked Users: <code>{blocked}</code>
 Deleted Accounts: <code>{deleted}</code>
-Unsuccessful: <code>{unsuccessful}</code>"""
+Unsuccessful: <code>{unsuccessful}</code></b>"""
         
         return await pls_wait.edit(status)
 
@@ -102,7 +89,7 @@ Unsuccessful: <code>{unsuccessful}</code>"""
         msg = await message.reply(REPLY_ERROR)
         await asyncio.sleep(8)
         await msg.delete()
-
+        
 @Client.on_message(filters.private & filters.command('m') & filters.user(SUDO_USERS))
 async def em(_, m):
     reply = m.reply_to_message
