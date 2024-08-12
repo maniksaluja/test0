@@ -14,7 +14,7 @@ LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002227717986') # Keep it Empty if n
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '18000')) # Enter time in seconds, keep it 0 for disabling.
 
-FSUB_1 = -1002157730552
+FSUB_1 = -1002231892124
 FSUB_2 = -1001999286144
 
 MUST_VISIT_LINK = "https://t.me/Ultra_XYZ/14"
