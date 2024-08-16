@@ -6,7 +6,7 @@ BOT_TOKEN = getenv('BOT_TOKEN', '6563909840:AAGCj0Ii3BjqCr5auxoSZUJZxKISr6KYr4c'
 BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCOROy8Q')
 
 SUDO_USERS = getenv('SUDO_USERS', '6604279354 6104594076') # Example: '1234 6789'
-MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://terasharingbot:Vy3hQFVITnJ4RswM@cluster0.vn1hama.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://My:4U9XFNFA8rEpakIP@cluster0.8txrwcd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '7150728058'))
