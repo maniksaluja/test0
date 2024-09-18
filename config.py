@@ -1,7 +1,7 @@
 from os import getenv
 
-API_ID = int(getenv('API_ID', '26980824'))
-API_HASH = getenv('API_HASH', 'fb044056059384d3bea54ab7ce915226')
+API_ID = int(getenv('API_ID', '28982634'))
+API_HASH = getenv('API_HASH', 'b54ae7b2e6a8874f82c860ec22e2a3df')
 BOT_TOKEN = getenv('BOT_TOKEN', '6944717193:AAG4nhx08Ri61XnLIHhGS1dG1Ik5mlLeh5g')
 BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCOROy8Q')
 
