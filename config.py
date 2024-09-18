@@ -10,7 +10,7 @@ MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://Manik:manik11@cluster0.xtzu
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '6730638739'))
-LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002231892124') # Keep it Empty if no Log Channel  
+LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002462410192') # Keep it Empty if no Log Channel  
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '3600')) # Enter time in seconds, keep it 0 for disabling.
 
