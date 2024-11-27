@@ -1,4 +1,4 @@
-from Database.auto_delete import get, update, get_all, db
+from Database.auto_delete import get, update, get_all
 from pyrogram.types import InlineKeyboardButton as IKB, InlineKeyboardMarkup as IKM
 from config import AUTO_DELETE_TIME
 import asyncio
@@ -8,34 +8,43 @@ from .encode_decode import decrypt, Char2Int
 from templates import POST_DELETE_TEXT
 from . import tryer
 
-async def task():
+async def auto_delete_task():
+    """
+    Task that automatically deletes messages after a specified time.
+    """
     if AUTO_DELETE_TIME == 0:
         return
+
     while True:
-        x = await get_all()
-        for i in x:
-            dic = await get(i)
-            to_del = []
-            for z in dic:
-                then = dic[z][1]
-                if int(time()-then) >= AUTO_DELETE_TIME:
-                    id_to_del = int(z)
-                    id_to_edit = int(dic[z][0])
-                    butt = IKM([[IKB('ᴡᴀᴛᴄʜ ᴀɢᴀɪɴ', url=dic[z][2])]])
-                    if 'get' in dic[z][2]:
-                        count = Char2Int(decrypt(dic[z][2].split('get')[1]).split('|')[1])
+        users = await get_all()
+        for user_id in users:
+            user_settings = await get(user_id)
+            to_delete = []
+            for msg_id, msg_info in user_settings.items():
+                timestamp = msg_info[1]
+                if int(time() - timestamp) >= AUTO_DELETE_TIME:
+                    message_id_to_delete = int(msg_id)
+                    message_id_to_edit = int(msg_info[0])
+                    button = IKM([[IKB('ᴡᴀᴛᴄʜ ᴀɢᴀɪɴ', url=msg_info[2])]])
+
+                    if 'get' in msg_info[2]:
+                        count = Char2Int(decrypt(msg_info[2].split('get')[1]).split('|')[1])
                     else:
-                        count = Char2Int(decrypt(dic[z][2].split('batch')[1][3:]).split('|')[1])
-                    txt = POST_DELETE_TEXT.format(count)
-                    to_del.append(z)
+                        count = Char2Int(decrypt(msg_info[2].split('batch')[1][3:]).split('|')[1])
+
+                    delete_text = POST_DELETE_TEXT.format(count)
+                    to_delete.append(msg_id)
                     try:
-                        await tryer(app.delete_messages, i, id_to_del),
-                        await tryer(app.edit_message_text, i, id_to_edit, txt, reply_markup=butt)
-                    except:
+                        await tryer(app.delete_messages, user_id, message_id_to_delete)
+                        await tryer(app.edit_message_text, user_id, message_id_to_edit, delete_text, reply_markup=button)
+                    except Exception:
                         pass
-            for to_d in to_del:
-                del dic[to_d]
-            await update(i, dic)
+
+            for msg_id in to_delete:
+                del user_settings[msg_id]
+
+            await update(user_id, user_settings)
+
         await asyncio.sleep(1)
 
-asyncio.create_task(task())
+asyncio.create_task(auto_delete_task())
