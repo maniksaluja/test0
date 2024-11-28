@@ -1,15 +1,16 @@
 from main import start, app
 import os
 
-# Func for purging session files.
-def st():
+# Function for purging session files
+def purge_sessions():
     print("Purging session files...")
-    dir = os.listdir()
-    for x in dir:
-        if ".session" in x or ".session-journal" in x:
-            os.remove(x)
+    for filename in os.listdir():
+        if filename.endswith(".session") or filename.endswith(".session-journal"):
+            os.remove(filename)
 
-st()
+# Purge session files
+purge_sessions()
+
 print("Starting Bots...")
 os.system('clear')
 app.run(start())
