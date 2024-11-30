@@ -14,6 +14,8 @@ LOG_CHANNEL_ID = getenv('LOG_CHANNEL_ID', '-1002462410192') # Keep it Empty if n
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '3600')) # Enter time in seconds, keep it 0 for disabling.
 
+FSUB = FSUB_1 FSUB_2
+
 FSUB_1 = -1002210532935
 FSUB_2 = -1002319501979
 
