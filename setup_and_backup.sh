@@ -33,7 +33,15 @@ check_existing_backup() {
 # Function to perform MySQL backup and send to Telegram
 perform_backup() {
     BACKUP_DIR="/home/ubuntu/backups"
-    mkdir -p $BACKUP_DIR
+    
+    # Check if backup directory exists, if not create it
+    if [ ! -d "$BACKUP_DIR" ]; then
+        echo "Backup directory does not exist. Creating..."
+        mkdir -p $BACKUP_DIR
+    else
+        echo "Backup directory exists."
+    fi
+
     TIMESTAMP=$(date +"%F_%T")
     BACKUP_NAME="mysql_backup_$TIMESTAMP"
     
