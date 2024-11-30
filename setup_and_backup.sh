@@ -1,18 +1,5 @@
 #!/bin/bash
 
-# Function to check Ubuntu version compatibility
-check_ubuntu_version() {
-    REQUIRED_VERSION="22.04"
-    CURRENT_VERSION=$(lsb_release -rs)
-    
-    if [[ "$CURRENT_VERSION" == "$REQUIRED_VERSION" ]]; then
-        echo "Compatible Ubuntu version detected: $CURRENT_VERSION"
-    else
-        echo "Incompatible Ubuntu version detected: $CURRENT_VERSION. Required: $REQUIRED_VERSION"
-        exit 1
-    fi
-}
-
 # Function to install MongoDB if not already installed
 install_mongodb() {
     if ! command -v mongo &> /dev/null; then
@@ -60,9 +47,32 @@ perform_backup() {
     mkdir -p "$BACKUP_DIR"
     TIMESTAMP=$(date +"%F_%T")
     BACKUP_NAME="mongodb_backup_$TIMESTAMP"
-    mongodump --db manik --out "$BACKUP_DIR/$BACKUP_NAME"
+    
+    # Check if mongodump is available before proceeding
+    if ! command -v mongodump &> /dev/null; then
+        echo "mongodump command not found. Aborting backup."
+        return 1
+    fi
 
+    # Perform the backup
+    mongodump --db manik --out "$BACKUP_DIR/$BACKUP_NAME"
+    
+    # Check if backup was successful
+    if [[ ! -d "$BACKUP_DIR/$BACKUP_NAME" ]]; then
+        echo "Backup failed. Directory $BACKUP_DIR/$BACKUP_NAME not created."
+        return 1
+    fi
+
+    # Compress the backup
     tar -czvf "$BACKUP_DIR/$BACKUP_NAME.tar.gz" -C "$BACKUP_DIR" "$BACKUP_NAME"
+    
+    # Check if the tar file was created
+    if [[ ! -f "$BACKUP_DIR/$BACKUP_NAME.tar.gz" ]]; then
+        echo "Backup tar file creation failed."
+        return 1
+    fi
+
+    # Send backup to Telegram
     BOT_TOKEN="7773860912:AAHo6aHZcV61VvaF_ymqY6_n7bneICOBbfo"
     CHAT_ID="-1002263879722"
     BACKUP_FILE="$BACKUP_DIR/$BACKUP_NAME.tar.gz"
@@ -76,8 +86,10 @@ perform_backup() {
         -F chat_id="$CHAT_ID" \
         -F document=@"$BACKUP_FILE"
 
-    find "$BACKUP_DIR" -type f -mtime +7 -name '*.tar.gz' -exec rm {} \;
     echo "Backup performed and sent to Telegram."
+    
+    # Cleanup: Remove old backups older than 7 days
+    find "$BACKUP_DIR" -type f -mtime +7 -name '*.tar.gz' -exec rm {} \;
 }
 
 # Function to check and manage collection size
@@ -88,6 +100,7 @@ check_collection_size() {
     DELETE_AMOUNT_MB=40
     LIMIT_BYTES=$((LIMIT_MB * 1024 * 1024))
     DELETE_AMOUNT_BYTES=$((DELETE_AMOUNT_MB * 1024 * 1024))
+    
     current_size=$(mongo --quiet --eval "db.$COLLECTION_NAME.stats().size" "$DB_NAME")
 
     if (( current_size > LIMIT_BYTES )); then
@@ -101,13 +114,16 @@ check_collection_size() {
 }
 
 # Main script execution
-check_ubuntu_version
 install_mongodb
 install_jq
 
 if check_existing_backup; then
     echo "Using existing backup."
 else
-    perform_backup
-    check_collection_size
+    # Run backup only if the previous backup was successful
+    if perform_backup; then
+        check_collection_size
+    else
+        echo "Backup failed, skipping collection size check."
+    fi
 fi
