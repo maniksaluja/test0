@@ -6,6 +6,7 @@ install_mysql() {
     then
         echo "MySQL is not installed. Installing MySQL..."
         
+        # Update package list and install MySQL server
         sudo apt update -y
         sudo apt install -y mysql-server
         sudo systemctl start mysql
@@ -19,6 +20,8 @@ install_mysql() {
 check_existing_backup() {
     BOT_TOKEN="7773860912:AAHo6aHZcV61VvaF_ymqY6_n7bneICOBbfo"
     CHAT_ID="-1002263879722"
+    
+    # Check for any recent backup file names in Telegram
     EXISTING_BACKUP=$(curl -s "https://api.telegram.org/bot$BOT_TOKEN/getUpdates" | grep -oP '(?<=document.file_name":")[^"]*')
     
     if [[ ! -z "$EXISTING_BACKUP" ]]; then
@@ -71,7 +74,7 @@ perform_backup() {
         -F chat_id=$CHAT_ID \
         -F document=@"$BACKUP_FILE"
 
-    # Clean up old backups
+    # Clean up old backups (older than 7 days)
     find $BACKUP_DIR -type f -mtime +7 -name '*.tar.gz' -exec rm {} \;
 
     echo "Backup performed and sent to Telegram."
