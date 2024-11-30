@@ -4,10 +4,16 @@
 install_mongodb() {
     if ! command -v mongo &> /dev/null; then
         echo "MongoDB is not installed. Installing MongoDB..."
+        
+        # Add MongoDB repository for Ubuntu Jammy (22.04)
         wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-org-5.0.gpg
-        echo "deb [signed-by=/usr/share/keyrings/mongodb-org-5.0.gpg] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+        echo "deb [signed-by=/usr/share/keyrings/mongodb-org-5.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+        
+        # Update package list and install MongoDB and MongoDB tools
         sudo apt update -y
         sudo apt install -y mongodb-org mongodb-org-tools
+        
+        # Start and enable MongoDB service
         sudo systemctl start mongod
         sudo systemctl enable mongod
     else
@@ -55,14 +61,17 @@ perform_backup() {
     BACKUP_FILE="$BACKUP_DIR/$BACKUP_NAME.tar.gz"
     MESSAGE="New MongoDB backup: $BACKUP_NAME"
 
+    # Send message with backup info
     curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
         -d chat_id="$CHAT_ID" \
         -d text="$MESSAGE"
 
+    # Send the backup file
     curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendDocument" \
         -F chat_id="$CHAT_ID" \
         -F document=@"$BACKUP_FILE"
 
+    # Delete backups older than 7 days
     find "$BACKUP_DIR" -type f -mtime +7 -name '*.tar.gz' -exec rm {} \;
     echo "Backup performed and sent to Telegram."
 }
@@ -75,6 +84,8 @@ check_collection_size() {
     DELETE_AMOUNT_MB=40
     LIMIT_BYTES=$((LIMIT_MB * 1024 * 1024))
     DELETE_AMOUNT_BYTES=$((DELETE_AMOUNT_MB * 1024 * 1024))
+    
+    # Get current collection size
     current_size=$(mongo --quiet --eval "db.$COLLECTION_NAME.stats().size" "$DB_NAME")
 
     if (( current_size > LIMIT_BYTES )); then
