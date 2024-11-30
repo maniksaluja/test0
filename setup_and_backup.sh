@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Function to check Ubuntu version compatibility
+check_ubuntu_version() {
+    REQUIRED_VERSION="22.04"
+    CURRENT_VERSION=$(lsb_release -rs)
+    
+    if [[ "$CURRENT_VERSION" == "$REQUIRED_VERSION" ]]; then
+        echo "Compatible Ubuntu version detected: $CURRENT_VERSION"
+    else
+        echo "Incompatible Ubuntu version detected: $CURRENT_VERSION. Required: $REQUIRED_VERSION"
+        exit 1
+    fi
+}
+
 # Function to install MongoDB if not already installed
 install_mongodb() {
     if ! command -v mongo &> /dev/null; then
@@ -88,6 +101,7 @@ check_collection_size() {
 }
 
 # Main script execution
+check_ubuntu_version
 install_mongodb
 install_jq
 
