@@ -39,8 +39,8 @@ perform_backup() {
     
     # MySQL Database Details
     DB_NAME="manik"
-    DB_USER="your_db_user"
-    DB_PASS="your_db_password"
+    DB_USER="manik636"
+    DB_PASS="manik@me1"
     
     # Backup MySQL database
     mysqldump -u $DB_USER -p$DB_PASS $DB_NAME > $BACKUP_DIR/$BACKUP_NAME.sql
