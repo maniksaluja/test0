@@ -77,5 +77,3 @@ else:
 
 # Schedule Backup
 take_backup()
-
-Es se kya kya hoga 
