@@ -1,12 +1,19 @@
 from os import getenv
 
-# Load values from environment variables
+# Ensure FSUB_1 and FSUB_2 are defined
+FSUB_1 = int(getenv('FSUB_1', '-1002210532935'))
+FSUB_2 = int(getenv('FSUB_2', '-1002319501979'))
+
+# Now define FSUB using FSUB_1 and FSUB_2
+FSUB = [FSUB_1, FSUB_2]
+
+# Load other values from environment variables
 API_ID = int(getenv('API_ID', '28982634'))
 API_HASH = getenv('API_HASH', 'b54ae7b2e6a8874f82c860ec22e2a3df')
 BOT_TOKEN = getenv('BOT_TOKEN', '6944717193:AAHnE_hdswDAZnLl7wuejysbgAC2AiKd7w8')
 BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCOROy8Q')
 
-SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]  # Convert to list of integers
+SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb://localhost:27017/myNewDatabase')
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
@@ -14,9 +21,6 @@ DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002296508906'))
 LOG_CHANNEL_ID = int(getenv('LOG_CHANNEL_ID', '-1002462410192')) if getenv('LOG_CHANNEL_ID') else None
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '3600'))  # Enter time in seconds, keep it 0 for disabling.
-
-# Fixing FSUB assignment
-FSUB = [int(getenv('FSUB_1', '-1002210532935')), int(getenv('FSUB_2', '-1002319501979'))]
 
 MUST_VISIT_LINK = "https://t.me/Ultra_XYZ/14"
 
