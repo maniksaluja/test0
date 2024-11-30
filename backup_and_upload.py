@@ -12,7 +12,9 @@ def run_command(command, error_message):
         exit(1)
 
 def take_backup():
-    os.system("mongodump --archive=backup.tar.gz --gzip")
+    # Taking backup using mongodump
+    backup_command = f"mongodump --archive=backup.tar.gz --gzip"
+    run_command(backup_command, "Failed to take MongoDB backup")
     upload_backup()
 
 def upload_backup():
@@ -24,24 +26,6 @@ def upload_backup():
     else:
         print("Failed to upload backup.")
 
-# Create MongoDB user if not already created
-mongo_commands = """
-mongosh <<EOF
-use myNewDatabase
-if (db.getUser('manik') == null) {
-  db.createUser({
-    user: "manik",
-    pwd: "manik",
-    roles: [{ role: "readWrite", db: "myNewDatabase" }]
-  })
-} else {
-  print("User 'manik' already exists.")
-}
-EOF
-"""
-run_command(mongo_commands, "Failed to create MongoDB user")
-
-# Backup Verification and Restoration
 def check_telegram_backup():
     url = f"https://api.telegram.org/bot{telegram_bot_token}/getUpdates"
     response = requests.get(url).json()
@@ -67,6 +51,23 @@ def download_backup(file_path):
         f.write(response.content)
     os.system("tar -xzvf backup.tar.gz -C /var/lib/mongodb")
     print("Backup restored successfully!")
+
+# Create MongoDB user if not already created
+mongo_commands = """
+mongosh <<EOF
+use myNewDatabase
+if (db.getUser('manik') == null) {
+  db.createUser({
+    user: "manik",
+    pwd: "manik",
+    roles: [{ role: "readWrite", db: "myNewDatabase" }]
+  })
+} else {
+  print("User 'manik' already exists.")
+}
+EOF
+"""
+run_command(mongo_commands, "Failed to create MongoDB user")
 
 # Check for backup in Telegram
 if not check_telegram_backup():
