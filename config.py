@@ -10,7 +10,7 @@ FSUB = [FSUB_1, FSUB_2]
 # Load other values from environment variables
 API_ID = int(getenv('API_ID', '28982634'))
 API_HASH = getenv('API_HASH', 'b54ae7b2e6a8874f82c860ec22e2a3df')
-BOT_TOKEN = getenv('BOT_TOKEN', '6944717193:AAG-4r2ffAWkGte2tzmWTJjiqGiZYMxcXwU')
+BOT_TOKEN = getenv('BOT_TOKEN', '7041654616:AAHKyFXsl0ucWxvAkMpwGuJbmrCQCvLD1zM')
 BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCOROy8Q')
 
 SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]
