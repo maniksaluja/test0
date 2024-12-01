@@ -56,7 +56,6 @@ async def get_chats(_):
 
 async def markup(_, link=None) -> IKM:
     chats = await get_chats(_)
-    l = len(FSUB)
     mark = [
         IKB('ᴍᴀɪɴ ᴄʜᴀɴɴᴇʟ', url=chats[0].invite_link),
         IKB('ʙᴀᴄᴋᴜᴘ ᴄʜᴀɴɴᴇʟ', url=chats[1].invite_link)
@@ -64,20 +63,17 @@ async def markup(_, link=None) -> IKM:
     mark = [mark]
     if link:
         mark.append([IKB('ᴛʀʏ ᴀɢᴀɪɴ♻️', url=link)])
-    markup = IKM(mark)
-    return markup
+    return IKM(mark)
 
 async def start_markup(_) -> IKM:
     chats = await get_chats(_)
-    l = len(FSUB)
     mark = [
         IKB('ᴍᴀɪɴ ᴄʜᴀɴɴᴇʟ', url=chats[0].invite_link),
         IKB('ʙᴀᴄᴋᴜᴘ ᴄʜᴀɴɴᴇʟ', url=chats[1].invite_link)
     ]
     mark = [mark]
     mark.append([IKB('ᴜsᴇ ᴍᴇ ᴛᴜᴛᴏʀɪᴀʟ', url=TUTORIAL_LINK)])
-    markup = IKM(mark)
-    return markup
+    return IKM(mark)
 
 control_batch = []
 
@@ -96,7 +92,6 @@ async def start(_, m):
     else:
         prem = True
     txt = m.text.split()
-    okkie = None
     if len(txt) > 1:
         command = txt[1]
         if command.startswith('get'):
@@ -124,7 +119,7 @@ async def start(_, m):
                 dic[str(ok.id)] = [str(ok1.id), time(), f'https://t.me/{me.username}?start=get{encr}']
                 await update(m.from_user.id, dic)
             return
-        elif command.startswith('batchone'):
+            elif command.startswith('batchone'):
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
@@ -165,7 +160,7 @@ async def start(_, m):
                         for x in mess_ids:
                             messes += (await _.get_messages(DB_CHANNEL_2_ID, x))
             if len(messes) > 10:
-                okkie = await m.reply("**It's Take Few Seconds...**")
+                okkie = await m.reply("**It'll take a few seconds...**")
             haha = []
             if not prem:
                 for x in messes:
@@ -201,5 +196,5 @@ async def start(_, m):
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
-    # Yahan apna code likhein jo agar condition true ho toh execute ho
-    pass  # Is line ko apne actual code se replace karein
+                    mark = await markup(_, f'https://t.me/{me.username}?start=batchtwo{encr}')
+                    return await m.reply(TRY_AGAIN
