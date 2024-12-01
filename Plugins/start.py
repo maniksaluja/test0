@@ -273,4 +273,3 @@ async def start_func(_, m):
     except:
         pass
     control_batch.remove(user_id) if user_id in control_batch else None
-
