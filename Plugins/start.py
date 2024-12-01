@@ -201,3 +201,5 @@ async def start(_, m):
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
+    # Yahan apna code likhein jo agar condition true ho toh execute ho
+    pass  # Is line ko apne actual code se replace karein
