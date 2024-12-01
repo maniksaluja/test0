@@ -13,7 +13,7 @@ from Database.encr import get_encr
 import asyncio
 from main import app
 
-members = {FSUB_1: [], FSUB_2: []}  # {chat_id: [user_id]}
+members = {FSUB_1: [], FSUB_2: []} # {chat_id: [user_id]}
 
 FSUB = [FSUB_1, FSUB_2]
 
@@ -28,7 +28,7 @@ async def cmufunc(_, cmu):
             members[cmu.chat.id].remove(cmu.from_user.id)
         except:
             pass
-
+        
 async def check_fsub(user_id: int) -> bool:
     for y in FSUB:
         if not user_id in members[y]:
@@ -111,7 +111,10 @@ async def start(_, m):
             spl = decrypt(encr).split('|')
             try:
                 msg = await _.get_messages(DB_CHANNEL_ID, Char2Int(spl[0]))
-            except:
+                if msg.empty:
+                    msg = await _.get_messages(DB_CHANNEL_2_ID, Char2Int(spl[2]))
+
+except:
                 msg = await _.get_messages(DB_CHANNEL_2_ID, Char2Int(spl[2]))
             await std.delete()
             if not prem:
@@ -128,6 +131,7 @@ async def start(_, m):
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
+                    #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchone{encr}')
                     return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
             std = await m.reply_sticker(STICKER_ID)
@@ -142,7 +146,7 @@ async def start(_, m):
                     mess_ids.append(list(range(st, st + 200)))
                     st += 200
                 if en - st + 1 > 0:
-                    mess_ids.append(list(range(st, en + 1)))
+                    mess_ids.append(list(range(st, en+1)))
                 messes = []
                 for x in mess_ids:
                     messes += (await _.get_messages(DB_CHANNEL_ID, x))
@@ -160,7 +164,7 @@ async def start(_, m):
                             mess_ids.append(list(range(st, st + 200)))
                             st += 200
                         if en - st + 1 > 0:
-                            mess_ids.append(list(range(st, en + 1)))
+                            mess_ids.append(list(range(st, en+1)))
                         messes = []
                         for x in mess_ids:
                             messes += (await _.get_messages(DB_CHANNEL_2_ID, x))
@@ -185,11 +189,13 @@ async def start(_, m):
                     gg = await tryer(x.copy, m.from_user.id, caption=None, reply_markup=None)
                     haha.append(gg)
                     await asyncio.sleep(1)
+                    # tasks.append(asyncio.create_task(x.copy(m.from_user.id)))
             await std.delete()
             if AUTO_DELETE_TIME != 0:
                 ok1 = await m.reply(AUTO_DELETE_TEXT.format(AUTO_DELETE_STR))
                 dic = await get(m.from_user.id)
-                for ok in haha:
+
+for ok in haha:
                     if not ok:
                         continue
                     dic[str(ok.id)] = [str(ok1.id), time(), f'https://t.me/{me.username}?start=batchone{encr}']
@@ -201,44 +207,28 @@ async def start(_, m):
             encr = command[8:]
             for i in chats:
                 if not await check_fsub(m.from_user.id):
+                    #txt = 'Make sure you have joined all chats below.'
                     mark = await markup(_, f'https://t.me/{me.username}?start=batchtwo{encr}')
-                    return await m.reply(TRY_AGAIN_TEXT.format return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
+                    return await m.reply(TRY_AGAIN_TEXT.format(m.from_user.mention), reply_markup=mark)
             std = await m.reply_sticker(STICKER_ID)
-            spl = decrypt(encr).split('|')[1].split('-')
+            spl = decrypt(encr).split('|')[0].split('-')
             st = Char2Int(spl[0])
             en = Char2Int(spl[1])
             if st == en:
-                messes = [await _.get_messages(DB_CHANNEL_ID, st)]
+                messes = [await _.get_messages(DB_CHANNEL_2_ID, st)]
             else:
                 mess_ids = []
                 while en - st + 1 > 200:
                     mess_ids.append(list(range(st, st + 200)))
                     st += 200
                 if en - st + 1 > 0:
-                    mess_ids.append(list(range(st, en + 1)))
+                    mess_ids.append(list(range(st, en+1)))
                 messes = []
                 for x in mess_ids:
-                    messes += (await _.get_messages(DB_CHANNEL_ID, x))
-            if not messes:
-                new_encr = await get_encr(encr)
-                if new_encr:
-                    spl = decrypt(new_encr).split('|')[1].split('-')
-                    st = Char2Int(spl[0])
-                    en = Char2Int(spl[1])
-                    if st == en:
-                        messes = [await _.get_messages(DB_CHANNEL_2_ID, st)]
-                    else:
-                        mess_ids = []
-                        while en - st + 1 > 200:
-                            mess_ids.append(list(range(st, st + 200)))
-                            st += 200
-                        if en - st + 1 > 0:
-                            mess_ids.append(list(range(st, en + 1)))
-                        messes = []
-                        for x in mess_ids:
-                            messes += (await _.get_messages(DB_CHANNEL_2_ID, x))
+                    messes += (await _.get_messages(DB_CHANNEL_2_ID, x))
+            okkie = None
             if len(messes) > 10:
-                okkie = await m.reply("It's Take Few Seconds...")
+                okkie = await m.reply("It's Take Few Seconds....")
             haha = []
             if not prem:
                 for x in messes:
@@ -258,6 +248,7 @@ async def start(_, m):
                     gg = await tryer(x.copy, m.from_user.id, caption=None, reply_markup=None)
                     haha.append(gg)
                     await asyncio.sleep(1)
+                    # tasks.append(asyncio.create_task(x.copy(m.from_user.id)))
             await std.delete()
             if AUTO_DELETE_TIME != 0:
                 ok1 = await m.reply(AUTO_DELETE_TEXT.format(AUTO_DELETE_STR))
@@ -270,4 +261,17 @@ async def start(_, m):
             if okkie:
                 await okkie.delete()
             return
-    await m.reply(START_MESSAGE_2.format(m.from_user.mention), reply_markup=await start_markup(_))
+    else:
+        await m.reply(START_MESSAGE_2.format(m.from_user.mention), reply_markup=await start_markup(_))
+
+@Client.on_message(filters.command('start') & filters.private)
+async def start_func(_, m):
+    user_id = m.from_user.id
+    if user_id in control_batch:
+        return
+    control_batch.append(user_id)
+    try:
+        await start(_, m)
+    except:
+        pass
+    control_batch.remove(user_id) if user_id in control_batch else None
