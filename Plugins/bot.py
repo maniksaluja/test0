@@ -13,7 +13,6 @@ from Database.auto_delete_2 import update_2, get_all_2, get_2
 from templates import AUTO_DELETE_TEXT, POST_DELETE_TEXT, USELESS_MESSAGE
 from . import AUTO_DELETE_STR, tryer, build
 from Database.count_2 import incr_count_2
-import time
 from config import USELESS_IMAGE
 
 async def stop(c):
@@ -37,6 +36,7 @@ markup = IKM([[IKB('𝘚𝘩𝘢𝘳𝘦 𝘞𝘪𝘵𝘩 𝘔𝘦', callback_da
 global_app = {}
 me = None
 bots = {}
+
 async def save(C, M):
     if not M.chat.id in bots:
         bots[M.chat.id] = (await tryer(C.get_users, M.chat.id)).is_bot
@@ -66,7 +66,9 @@ async def save(C, M):
     count = await incr_count_2()
     cops = []
     uffie = await tryer(paa.send_message, M.from_user.id, 'Under processing...')
+    
     for msg in messes:
+        await asyncio.sleep(1)  # Added delay to avoid rate limits
         if not msg or msg.empty:
             continue 
         if msg.from_user.id == M.from_user.id:
@@ -91,7 +93,10 @@ async def save(C, M):
                     cop = await paa.send_photo(M.from_user.id, dl, caption=msg.caption, reply_markup=markup)
                 elif msg.animation:
                     cop = await paa.send_animation(M.from_user.id, dl, caption=msg.caption, reply_markup=markup)
-                os.remove('downloads/' + dl.split('/')[-1])
+                try:
+                    os.remove('downloads/' + dl.split('/')[-1])
+                except FileNotFoundError:
+                    pass
             except:
                 pass
         if settings['auto_save']:
@@ -99,8 +104,6 @@ async def save(C, M):
         cops.append(cop.id)
     ok = await paa.send_message(M.from_user.id, AUTO_DELETE_TEXT.format(AUTO_DELETE_STR))
     await update_2(M.from_user.id, [cops, ok.id, count, time.time()])
-    
-    # await stop(global_app[M.from_user.id])
 
 @Client.on_message(filters.command('bot'))
 async def bot(_, m):
@@ -124,6 +127,7 @@ async def bot(_, m):
         except ConnectionError:
             pass
     except FloodWait as e:
+        await asyncio.sleep(e.value)  # Handle FloodWait delay
         return await m.reply(f'Try Again After {e.value} seconds.')
     except:
         return await m.reply('Session Expired.')
@@ -132,6 +136,7 @@ async def task():
     while True:
         x = await get_all_2()
         for y in x:
+            await asyncio.sleep(1)  # Delay per item processing
             lis = await get_2(y)
             if not lis:
                 continue
@@ -143,6 +148,6 @@ async def task():
             except:
                 pass
             await update_2(y, [])
-        await asyncio.sleep(10)
+        await asyncio.sleep(10)  # Delay for next task cycle
 
 asyncio.create_task(task())
