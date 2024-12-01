@@ -200,4 +200,4 @@ async def start(_, m):
         elif command.startswith('batchtwo'):
             encr = command[8:]
             for i in chats:
-                if not await
+                if not await check_fsub(m.from_user.id):
