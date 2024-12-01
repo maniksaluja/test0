@@ -113,8 +113,7 @@ async def start(_, m):
                 msg = await _.get_messages(DB_CHANNEL_ID, Char2Int(spl[0]))
                 if msg.empty:
                     msg = await _.get_messages(DB_CHANNEL_2_ID, Char2Int(spl[2]))
-
-except:
+            except:
                 msg = await _.get_messages(DB_CHANNEL_2_ID, Char2Int(spl[2]))
             await std.delete()
             if not prem:
@@ -169,7 +168,7 @@ except:
                         for x in mess_ids:
                             messes += (await _.get_messages(DB_CHANNEL_2_ID, x))
             if len(messes) > 10:
-                okkie = await m.reply("It's Take Few Seconds...")
+                okkie = await m.reply("**It's Take Few Seconds...**")
             haha = []
             if not prem:
                 for x in messes:
@@ -194,8 +193,7 @@ except:
             if AUTO_DELETE_TIME != 0:
                 ok1 = await m.reply(AUTO_DELETE_TEXT.format(AUTO_DELETE_STR))
                 dic = await get(m.from_user.id)
-
-for ok in haha:
+                for ok in haha:
                     if not ok:
                         continue
                     dic[str(ok.id)] = [str(ok1.id), time(), f'https://t.me/{me.username}?start=batchone{encr}']
@@ -228,7 +226,7 @@ for ok in haha:
                     messes += (await _.get_messages(DB_CHANNEL_2_ID, x))
             okkie = None
             if len(messes) > 10:
-                okkie = await m.reply("It's Take Few Seconds....")
+                okkie = await m.reply("**It's Take Few Seconds....**")
             haha = []
             if not prem:
                 for x in messes:
@@ -275,3 +273,4 @@ async def start_func(_, m):
     except:
         pass
     control_batch.remove(user_id) if user_id in control_batch else None
+
