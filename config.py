@@ -17,7 +17,7 @@ SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').spli
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://Manik:manik11@cluster0.xtzuh.mongodb.net/?retryWrites=true&w=majority')
 
 DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
-DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002296508906'))
+DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002171225671'))
 LOG_CHANNEL_ID = int(getenv('LOG_CHANNEL_ID', '-1002462410192')) if getenv('LOG_CHANNEL_ID') else None
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '3600'))  # Enter time in seconds, keep it 0 for disabling.
