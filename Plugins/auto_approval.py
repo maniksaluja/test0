@@ -11,11 +11,13 @@ async def cjr(client: Client, request):
     if not settings['auto_approval']:
         return
 
-    # Approve the chat join request
-    await client.approve_chat_join_request(
-        request.chat.id,
-        request.from_user.id
-    )
-    
-    # Send a welcome message to the user
-    await client.send_message(request.from_user.id, "Hi")
+    try:
+        # Approve the chat join request
+        await client.approve_chat_join_request(
+            request.chat.id,
+            request.from_user.id
+        )
+        # Send a welcome message to the user
+        await client.send_message(request.from_user.id, "Hi")
+    except pyrogram.errors.UserAlreadyParticipant:
+        pass  # Ignore if user is already a participant
