@@ -50,7 +50,8 @@ app1 = ClientLike(
 # Function to send logs to Telegram
 async def send_log_to_telegram(message):
     try:
-        await log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=message, parse_mode=ParseMode.MARKDOWN)
+        escaped_message = message.replace('.', '\.')
+        await log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=escaped_message, parse_mode=ParseMode.MARKDOWN_V2)
     except Exception as e:
         logging.error(f"Telegram notification failed: {e}")
         print(f"Telegram notification failed: {e}")
@@ -96,25 +97,7 @@ async def monitor_api():
         print(f"API Call Failed: {e}")
         await send_log_to_telegram(error_message)
 
-async def start():
-    try:
-        await app.start()
-        print(f"Bot {BOT_TOKEN} started successfully")
-    except Exception as e:
-        error_message = f"Failed to start Bot {BOT_TOKEN}: {e}"
-        print(error_message)
-        logging.error(error_message)
-        await send_log_to_telegram(error_message)
-    
-    try:
-        await app1.start()
-        print(f"Bot {BOT_TOKEN_2} started successfully")
-    except Exception as e:
-        error_message = f"Failed to start Bot {BOT_TOKEN_2}: {e}"
-        print(error_message)
-        logging.error(error_message)
-        await send_log_to_telegram(error_message)
-    
+async def check_requirements():
     ret = False
     status_message = ""
 
@@ -172,18 +155,6 @@ async def start():
             status_message += f"LOG_CHANNEL_ID bot1 ❌\n"
             ret = True
 
-        try:
-            m = await app1.send_message(LOG_CHANNEL_ID, '.')
-            await m.delete()
-            status_message += f"LOG_CHANNEL_ID bot2 ✅\n"
-        except Exception as e:
-            error_message = f"Bot {BOT_TOKEN_2} cannot send message to LOG_CHANNEL_ID: `{str(e).replace('.', '.')}`"
-            print(error_message)
-            logging.error(error_message)
-            await send_log_to_telegram(error_message)
-            status_message += f"LOG_CHANNEL_ID bot2 ❌\n"
-            ret = True
-
     for x in FSUB:
         try:
             print(f"Sending message to FSUB channel {x}")
@@ -211,19 +182,41 @@ async def start():
             status_message += f"FSUB {x} bot2 ❌\n"
             ret = True
 
-    if ret:
+    await send_log_to_telegram(status_message)
+    return ret
+
+async def start():
+    try:
+        await app.start()
+        print(f"Bot {BOT_TOKEN} started successfully")
+    except Exception as e:
+        error_message = f"Failed to start Bot {BOT_TOKEN}: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
+
+    try:
+        await app1.start()
+        print(f"Bot {BOT_TOKEN_2} started successfully")
+    except Exception as e:
+        error_message = f"Failed to start Bot {BOT_TOKEN_2}: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
+
+    # Check requirements before proceeding
+    requirements_met = await check_requirements()
+    if requirements_met:
         sys.exit()
 
-    # Monitor API periodically
-    while True:
-        print("Monitoring API")
-        await monitor_api()
-        await asyncio.sleep(60)  # Check every 60 seconds
+    print("Monitoring API")
+    await monitor_api()
 
     x = await app.get_me()
     y = await app1.get_me()
     print(f'@{x.username} started.')
     print(f'@{y.username} started.')
 
-    await send_log_to_telegram(status_message)
+    start_message = f'@{x.username} started.\n@{y.username} started.'
+    await send_log_to_telegram(start_message)
     await idle()
