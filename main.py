@@ -50,7 +50,7 @@ app1 = ClientLike(
 # Function to send logs to Telegram
 async def send_log_to_telegram(message):
     try:
-        escaped_message = message.replace('.', '\\.').replace('-', '\\-')
+        escaped_message = message.replace('.', '\\\\.').replace('-', '\\\\-')  # Escaping backslashes correctly
         await log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=escaped_message, parse_mode=ParseMode.MARKDOWN_V2)
     except Exception as e:
         logging.error(f"Telegram notification failed: {e}")
