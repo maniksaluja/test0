@@ -4,7 +4,8 @@ import sys
 import logging
 import time
 import aiohttp
-from telegram import Bot, ParseMode
+from telegram import Bot
+from telegram.constants import ParseMode
 from resolve import ResolvePeer
 import asyncio
 
