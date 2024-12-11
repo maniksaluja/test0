@@ -89,8 +89,17 @@ async def monitor_api():
         await send_log_to_telegram(error_message)
 
 async def start():
-    await app.start()
-    await app1.start()
+    try:
+        await app.start()
+        print(f"Bot {BOT_TOKEN} started successfully")
+    except Exception as e:
+        print(f"Failed to start Bot {BOT_TOKEN}: {e}")
+    
+    try:
+        await app1.start()
+        print(f"Bot {BOT_TOKEN_2} started successfully")
+    except Exception as e:
+        print(f"Failed to start Bot {BOT_TOKEN_2}: {e}")
     
     # Monitor API after bot start
     await monitor_api()
