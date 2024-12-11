@@ -73,7 +73,9 @@ async def start():
     for channel in channels_to_check:
         try:
             print(f"Checking Bot1 message to channel ID: {channel}")  # Debugging statement
-            await app.track_response_time(app.send_message, channel, '.')
+            sent_msg = await app.track_response_time(app.send_message, channel, '.')
+            if not hasattr(sent_msg, 'message_id'):
+                print(f"[ERROR] Message does not have message_id in channel {channel}.")
         except Exception as e:
             print(f"[ERROR] Bot1 cannot send message in channel {channel}. Error: {e}")
             ret = True
@@ -81,7 +83,9 @@ async def start():
     for channel in FSUB:
         try:
             print(f"Checking Bot2 message to channel ID: {channel}")  # Debugging statement
-            await app1.track_response_time(app1.send_message, channel, '.')
+            sent_msg = await app1.track_response_time(app1.send_message, channel, '.')
+            if not hasattr(sent_msg, 'message_id'):
+                print(f"[ERROR] Message does not have message_id in FSUB channel {channel}.")
         except Exception as e:
             print(f"[ERROR] Bot2 cannot send message in FSUB channel {channel}. Error: {e}")
             ret = True
