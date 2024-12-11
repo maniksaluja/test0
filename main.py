@@ -3,9 +3,10 @@ from config import *
 import sys
 import logging
 import time
-import requests
+import aiohttp
 from telegram import Bot, ParseMode
 from resolve import ResolvePeer
+import asyncio
 
 FSUB = [FSUB_1, FSUB_2]
 
@@ -44,51 +45,52 @@ app1 = ClientLike(
 )
 
 # Function to send logs to Telegram
-def send_log_to_telegram(message):
+async def send_log_to_telegram(message):
     try:
-        log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=message, parse_mode=ParseMode.MARKDOWN_V2)
+        await log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=message, parse_mode=ParseMode.MARKDOWN_V2)
     except Exception as e:
         logging.error(f"Telegram notification failed: {e}")
 
 # Function to monitor API response times and errors
-def monitor_api():
+async def monitor_api():
     url = "https://api.telegram.org/bot<your_bot_token>/getMe"  # Example API call
     try:
         start_time = time.time()
-        response = requests.get(url, timeout=10)
-        end_time = time.time()
-        response_time = round(end_time - start_time, 2)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=10) as response:
+                end_time = time.time()
+                response_time = round(end_time - start_time, 2)
 
-        if response.status_code == 200:
-            message = (
-                f"✅ *API Working*\n"
-                f"> *Response Time*: `{response_time}s`"
-            )
-            logging.info(message)
-        else:
-            message = (
-                f"⚠️ *API Issue*\n"
-                f"> *Status Code*: `{response.status_code}`\n"
-                f"> *Response Time*: `{response_time}s`"
-            )
-            logging.warning(message)
+                if response.status == 200:
+                    message = (
+                        f"✅ *API Working*\n"
+                        f"> *Response Time*: `{response_time}s`"
+                    )
+                    logging.info(message)
+                else:
+                    message = (
+                        f"⚠️ *API Issue*\n"
+                        f"> *Status Code*: `{response.status}`\n"
+                        f"> *Response Time*: `{response_time}s`"
+                    )
+                    logging.warning(message)
 
-        send_log_to_telegram(message)
+                await send_log_to_telegram(message)
 
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         error_message = (
-    f"❌ *API Call Failed*\n"
-    f"> *Error*: `{str(e).replace('.', '\\.')}`"
+            f"❌ *API Call Failed*\n"
+            f"> *Error*: `{str(e).replace('.', '\\.')}`"
         )
         logging.error(error_message)
-        send_log_to_telegram(error_message)
+        await send_log_to_telegram(error_message)
 
 async def start():
     await app.start()
     await app1.start()
     
     # Monitor API after bot start
-    monitor_api()
+    await monitor_api()
 
     ret = False
     try:
@@ -136,7 +138,7 @@ async def start():
 
     # Monitor API periodically
     while True:
-        monitor_api()
+        await monitor_api()
         await asyncio.sleep(60)  # Check every 60 seconds
 
     x = await app.get_me()
