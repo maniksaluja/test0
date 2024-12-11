@@ -53,7 +53,7 @@ async def send_log_to_telegram(message):
 
 # Function to monitor API response times and errors
 async def monitor_api():
-    url = "https://api.telegram.org/bot<your_bot_token>/getMe"  # Example API call
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getMe"  # Actual bot token here
     try:
         start_time = time.time()
         async with aiohttp.ClientSession() as session:
