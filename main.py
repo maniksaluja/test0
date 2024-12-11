@@ -102,7 +102,7 @@ async def check_requirements():
 
     try:
         print("Sending message to DB_CHANNEL_ID")
-        m = await app.send_message(DB_CHANNEL_ID, '\\.')
+        m = await app.send_message(DB_CHANNEL_ID, '.')
         await m.delete()
         status_message += "DB_CHANNEL_ID bot1 ✅\n"
     except Exception as e:
@@ -117,7 +117,7 @@ async def check_requirements():
 
     try:
         print("Sending message to DB_CHANNEL_2_ID")
-        m = await app.send_message(DB_CHANNEL_2_ID, '\\.')
+        m = await app.send_message(DB_CHANNEL_2_ID, '.')
         await m.delete()
         status_message += "DB_CHANNEL_2_ID bot1 ✅\n"
     except Exception as e:
@@ -132,7 +132,7 @@ async def check_requirements():
 
     try:
         print("Sending message to AUTO_SAVE_CHANNEL_ID")
-        m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '\\.')
+        m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '.')
         await m.delete()
         status_message += "AUTO_SAVE_CHANNEL_ID bot1 ✅\n"
     except Exception as e:
@@ -148,7 +148,7 @@ async def check_requirements():
     if LOG_CHANNEL_ID:
         try:
             print("Sending message to LOG_CHANNEL_ID")
-            m = await app.send_message(LOG_CHANNEL_ID, '\\.')
+            m = await app.send_message(LOG_CHANNEL_ID, '.')
             await m.delete()
             status_message += "LOG_CHANNEL_ID bot1 ✅\n"
         except Exception as e:
@@ -164,7 +164,7 @@ async def check_requirements():
     for x in FSUB:
         try:
             print(f"Sending message to FSUB channel {x}")
-            m = await app.send_message(x, '\\.')
+            m = await app.send_message(x, '.')
             await m.delete()
             status_message += f"FSUB {x} bot1 ✅\n"
         except Exception as e:
@@ -179,7 +179,7 @@ async def check_requirements():
 
         try:
             print(f"Notifier Bot sending message to FSUB channel {x}")
-            m = await app1.send_message(x, '\\.')
+            m = await app1.send_message(x, '.')
             await m.delete()
             status_message += f"FSUB {x} bot2 ✅\n"
         except Exception as e:
