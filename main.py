@@ -3,6 +3,7 @@ from config import *
 import sys
 import time
 from resolve import ResolvePeer
+from pyrogram.errors import FloodWait
 
 FSUB = [FSUB_1, FSUB_2]
 
@@ -23,6 +24,10 @@ class ClientLike(Client):
             if response_time > 5:  # If response time exceeds 5 seconds
                 await self.send_message(VPSLOG_CHANNEL, f"[SLOW RESPONSE] Response time: {response_time:.2f}s, Function: {message_func.__name__}, Args: {args}, Kwargs: {kwargs}")
             return result
+        except FloodWait as e:
+            await self.send_message(VPSLOG_CHANNEL, f"[FLOOD WAIT] Sleeping for {e.x} seconds. Error: {str(e)}")
+            time.sleep(e.x)
+            raise e
         except Exception as e:
             await self.send_message(VPSLOG_CHANNEL, f"[ERROR] Failed to send message in {message_func.__name__}. Error: {str(e)}")
             raise e
@@ -49,42 +54,19 @@ async def start():
     ret = False
 
     # Check if bots can send messages to channels and track response time
-    try:
-        await app.track_response_time(app.send_message, DB_CHANNEL_ID, '.')
-    except Exception as e:
-        print(f"[ERROR] Bot1 cannot send message in DB_CHANNEL_ID. Error: {e}")
-        ret = True
-    try:
-        await app.track_response_time(app.send_message, DB_CHANNEL_2_ID, '.')
-    except Exception as e:
-        print(f"[ERROR] Bot1 cannot send message in DB_CHANNEL_2_ID. Error: {e}")
-        ret = True
-    try:
-        await app.track_response_time(app.send_message, AUTO_SAVE_CHANNEL_ID, '.')
-    except Exception as e:
-        print(f"[ERROR] Bot1 cannot send message in AUTO_SAVE_CHANNEL_ID. Error: {e}")
-        ret = True
-    if LOG_CHANNEL_ID:
+    channels_to_check = [DB_CHANNEL_ID, DB_CHANNEL_2_ID, AUTO_SAVE_CHANNEL_ID, LOG_CHANNEL_ID] + FSUB
+    for channel in channels_to_check:
         try:
-            await app.track_response_time(app.send_message, LOG_CHANNEL_ID, '.')
+            await app.track_response_time(app.send_message, channel, '.')
         except Exception as e:
-            print(f"[ERROR] Bot1 cannot send message in LOG_CHANNEL_ID. Error: {e}")
+            print(f"[ERROR] Bot1 cannot send message in channel {channel}. Error: {e}")
             ret = True
 
-    # Check for FSUB channels
-    for x in FSUB:
+    for channel in FSUB:
         try:
-            await app.track_response_time(app.send_message, x, '.')
+            await app1.track_response_time(app1.send_message, channel, '.')
         except Exception as e:
-            print(f"[ERROR] Bot1 cannot send message in FSUB channel {x}. Error: {e}")
-            ret = True
-
-    # Check for FSUB channels with second bot
-    for x in FSUB:
-        try:
-            await app1.track_response_time(app1.send_message, x, '.')
-        except Exception as e:
-            print(f"[ERROR] Bot2 cannot send message in FSUB channel {x}. Error: {e}")
+            print(f"[ERROR] Bot2 cannot send message in FSUB channel {channel}. Error: {e}")
             ret = True
 
     if ret:
@@ -95,3 +77,6 @@ async def start():
     print(f'@{x.username} started.')
     print(f'@{y.username} started.')
     await idle()
+
+if __name__ == "__main__":
+    app.run(start)
