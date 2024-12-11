@@ -1,3 +1,4 @@
+import os
 from pyrogram import Client, idle
 from config import *
 import sys
@@ -11,15 +12,19 @@ import asyncio
 
 FSUB = [FSUB_1, FSUB_2]
 
+# Clean old logs
+if os.path.exists("vps_real_logs.log"):
+    os.remove("vps_real_logs.log")
+
 # Use BOT_TOKEN_2 for logging
 LOG_BOT_TOKEN = BOT_TOKEN_2
-LOG_CHANNEL_ID = VPS_LOGS  # Using the new VPS_LOGS variable
+LOG_CHANNEL_ID = VPS_LOGS  # Using the VPS_LOGS variable for bot logs
 
-# Initialize Telegram Bot
+# Initialize Telegram Bot for bot logs
 log_bot = Bot(token=LOG_BOT_TOKEN)
 
-# Logging setup
-logging.basicConfig(filename="backend_monitor.log", level=logging.INFO, format="%(asctime)s - %(message)s")
+# Logging setup for real VPS logs
+logging.basicConfig(filename="vps_real_logs.log", level=logging.INFO, format="%(asctime)s - %(message)s")
 
 class ClientLike(Client):
     def __init__(self, *args, **kwargs):
@@ -47,7 +52,7 @@ app1 = ClientLike(
     plugins=dict(root='Plugins1')
 )
 
-# Function to send logs to Telegram
+# Function to send logs to Telegram (vps_logs)
 async def send_log_to_telegram(message):
     try:
         escaped_message = message.replace('-', '\\-').replace('.', '\\.').replace('_', '\\_')
@@ -56,7 +61,7 @@ async def send_log_to_telegram(message):
         logging.error(f"Telegram notification failed: {e}")
         print(f"Telegram notification failed: {e}")
 
-# Function to monitor API response times and errors
+# Function to monitor API response times and errors (for real VPS logs)
 async def monitor_api():
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getMe"
     try:
@@ -165,7 +170,7 @@ async def start():
     print(start_message)
     await send_log_to_telegram(start_message)
 
-    # Monitor API periodically
+    # Monitor API periodically (for real VPS logs)
     while True:
         await monitor_api()
         await asyncio.sleep(60)  # Check every 60 seconds
