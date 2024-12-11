@@ -66,29 +66,32 @@ async def start():
     await app1.start()
     ret = False
 
-    channels_to_check = [DB_CHANNEL_ID, DB_CHANNEL_2_ID, AUTO_SAVE_CHANNEL_ID] + FSUB
-    if LOG_CHANNEL_ID:
-        channels_to_check.append(LOG_CHANNEL_ID)
+    channels_to_check = [DB_CHANNEL_ID, DB_CHANNEL_2_ID, AUTO_SAVE_CHANNEL_ID, LOG_CHANNEL_ID] + FSUB
+    checked_channels = set()  # To keep track of unique channels
 
     for channel in channels_to_check:
-        try:
-            print(f"Checking Bot1 message to channel ID: {channel}")  # Debugging statement
-            sent_msg = await app.track_response_time(app.send_message, channel, '.')
-            if not hasattr(sent_msg, 'message_id'):
-                print(f"[ERROR] Message does not have message_id in channel {channel}.")
-        except Exception as e:
-            print(f"[ERROR] Bot1 cannot send message in channel {channel}. Error: {e}")
-            ret = True
+        if channel not in checked_channels:
+            try:
+                print(f"Checking Bot1 message to channel ID: {channel}")  # Debugging statement
+                sent_msg = await app.track_response_time(app.send_message, channel, '.')
+                if not hasattr(sent_msg, 'message_id'):
+                    print(f"[ERROR] Message does not have message_id in channel {channel}.")
+            except Exception as e:
+                print(f"[ERROR] Bot1 cannot send message in channel {channel}. Error: {e}")
+                ret = True
+            checked_channels.add(channel)  # Add channel to set after sending message
 
     for channel in FSUB:
-        try:
-            print(f"Checking Bot2 message to channel ID: {channel}")  # Debugging statement
-            sent_msg = await app1.track_response_time(app1.send_message, channel, '.')
-            if not hasattr(sent_msg, 'message_id'):
-                print(f"[ERROR] Message does not have message_id in FSUB channel {channel}.")
-        except Exception as e:
-            print(f"[ERROR] Bot2 cannot send message in FSUB channel {channel}. Error: {e}")
-            ret = True
+        if channel not in checked_channels:
+            try:
+                print(f"Checking Bot2 message to channel ID: {channel}")  # Debugging statement
+                sent_msg = await app1.track_response_time(app1.send_message, channel, '.')
+                if not hasattr(sent_msg, 'message_id'):
+                    print(f"[ERROR] Message does not have message_id in FSUB channel {channel}.")
+            except Exception as e:
+                print(f"[ERROR] Bot2 cannot send message in FSUB channel {channel}. Error: {e}")
+                ret = True
+            checked_channels.add(channel)  # Add channel to set after sending message
 
     if ret:
         sys.exit()
