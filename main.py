@@ -77,8 +77,8 @@ def monitor_api():
 
     except requests.exceptions.RequestException as e:
         error_message = (
-            f"❌ *API Call Failed*\n"
-            f"> *Error*: `{str(e).replace('.', '\\.')}`"
+    f"❌ *API Call Failed*\n"
+    f"> *Error*: `{str(e).replace('.', '\\.')}`"
         )
         logging.error(error_message)
         send_log_to_telegram(error_message)
