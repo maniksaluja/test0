@@ -12,8 +12,8 @@ API_ID = int(getenv('API_ID', '26980824'))
 API_HASH = getenv('API_HASH', 'fb044056059384d3bea54ab7ce915226')
 
 # Add separate API ID and API Hash for both bots
-API_ID_BOT = int(getenv('API_ID_BOT1', '3510496'))  # Bot2 API ID
-API_HASH_BOT = getenv('API_HASH_BOT1', 'c65647776bb4e93defc9504571d2b990')  # Bot2 API Hash
+API_ID2 = int(getenv('API_ID_BOT1', '3510496'))  # Bot2 API ID
+API_HASH2 = getenv('API_HASH_BOT1', 'c65647776bb4e93defc9504571d2b990')  # Bot2 API Hash
 
 BOT_TOKEN = getenv('BOT_TOKEN', '7041654616:AAHKyFXsl0ucWxvAkMpwGuJbmrCQCvLD1zM')
 BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7643758086:AAGyhG5pf6KCDZgoZ4Gr6y8_4mKaXTvBj3U')
