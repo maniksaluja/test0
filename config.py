@@ -25,9 +25,6 @@ DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
 DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002171225671'))
 LOG_CHANNEL_ID = int(getenv('LOG_CHANNEL_ID', '-1002462410192')) if getenv('LOG_CHANNEL_ID') else None
 
-# variable for VPS logs
-VPSLOG_CHANNEL = int(getenv('VPSLOG_CHANNEL', '-1002319331790'))
-
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '0'))  # Enter time in seconds, keep it 0 for disabling.
 
 MUST_VISIT_LINK = "https://t.me/Ultra_XYZ/14"
