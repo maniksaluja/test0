@@ -31,17 +31,18 @@ class ClientLike(Client):
                 return  # Skip if channel ID is None
             
             sent_msg = await message_func(*args, **kwargs)  # Send the message
+            if not hasattr(sent_msg, 'message_id'):
+                logger.error(f"[ERROR] Message does not have message_id. Not deleting.")
+                return
+
             response_time = time.time() - start_time
             if response_time > 5:  # If response time exceeds 5 seconds
                 await self.send_message(VPSLOG_CHANNEL, f"[SLOW RESPONSE] Response time: {response_time:.2f}s, Function: {message_func.__name__}, Args: {args}, Kwargs: {kwargs}")
             
-            # Ensure message was sent and delete it
-            if hasattr(sent_msg, 'message_id'):
-                await self.delete_messages(args[0], sent_msg.message_id)  # Delete the sent message
-                logger.info(f"Message deleted from channel {args[0]} with message_id {sent_msg.message_id}")
-            else:
-                logger.error(f"[ERROR] Message does not have message_id. Not deleting.")
-            
+            # Delete the message if it's successfully sent
+            await self.delete_messages(args[0], sent_msg.message_id)  # Delete the sent message
+            logger.info(f"Message deleted from channel {args[0]} with message_id {sent_msg.message_id}")
+
             return sent_msg
         except FloodWait as e:
             await self.send_message(VPSLOG_CHANNEL, f"[FLOOD WAIT] Sleeping for {e.x} seconds. Error: {str(e)}")
