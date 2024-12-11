@@ -80,7 +80,7 @@ async def monitor_api():
     except Exception as e:
         error_message = (
             f"❌ *API Call Failed*\n"
-            f"> *Error*: `{str(e).replace('.', '\\.')}`"
+            f"> *Error*: `{str(e).replace('.', '\\\\.')}`"  # Fixed backslash issue here
         )
         logging.error(error_message)
         await send_log_to_telegram(error_message)
