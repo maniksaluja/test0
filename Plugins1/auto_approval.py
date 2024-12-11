@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.errors import UserAlreadyParticipant, FloodWait, BadRequest  # Add necessary imports
 from config import FSUB_1, FSUB_2, JOIN_IMAGE, MUST_VISIT_LINK, TUTORIAL_LINK
 from templates import JOIN_MESSAGE
 from Database.settings import get_settings
@@ -37,5 +38,15 @@ async def cjr(_: Client, r):
         else:
             await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
         await add_user_2(r.from_user.id)
+    except UserAlreadyParticipant:
+        pass  # Ignore if user is already a participant
+    except FloodWait as e:
+        print(f"Flood wait error: {e.x} seconds")
+        await asyncio.sleep(e.x)
+    except BadRequest as e:
+        if e.MESSAGE == "400 HIDE_REQUESTER_MISSING":
+            print("Hide requester missing, can't approve join request.")
+        else:
+            print(f"BadRequest error: {e.MESSAGE}")
     except Exception as e:
-        print(e)
+        print(f"An unexpected error occurred: {str(e)}")
