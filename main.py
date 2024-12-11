@@ -41,8 +41,8 @@ app = ClientLike(
 # Initialize app for bot 2 with its respective API ID, API Hash, and Token
 app1 = ClientLike(
     ':91-1:',
-    api_id=API_ID_BOT2,  # Bot 2's API ID
-    api_hash=API_HASH_BOT2,  # Bot 2's API Hash
+    api_id=API_ID2,  # Bot 2's API ID
+    api_hash=API_HASH2,  # Bot 2's API Hash
     bot_token=BOT_TOKEN_2,
     plugins=dict(root='Plugins1')
 )
