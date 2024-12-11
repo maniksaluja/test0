@@ -1,13 +1,17 @@
+import logging
+import time
+import sys
+import asyncio
 from pyrogram import Client, idle
 from config import *
-import sys
-import time
 from resolve import ResolvePeer
 from pyrogram.errors import FloodWait, BadRequest
 
-# Set up logging
+# Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+FSUB = [FSUB_1, FSUB_2]
 
 class ClientLike(Client):
     def __init__(self, *args, **kwargs):
@@ -41,7 +45,7 @@ class ClientLike(Client):
             return sent_msg
         except FloodWait as e:
             await self.send_message(VPSLOG_CHANNEL, f"[FLOOD WAIT] Sleeping for {e.x} seconds. Error: {str(e)}")
-            await asyncio.sleep(e.x)  # Use async sleep
+            await asyncio.sleep(e.x)  # Use asyncio.sleep to avoid blocking the event loop
             raise e
         except BadRequest as e:
             await self.send_message(VPSLOG_CHANNEL, f"[BAD REQUEST] Error: {str(e)}")
@@ -49,8 +53,8 @@ class ClientLike(Client):
             raise e
         except Exception as e:
             await self.send_message(VPSLOG_CHANNEL, f"[ERROR] Failed to send message in {message_func.__name__}. Error: {str(e)}")
-            logger.error(f"[ERROR] {str(e)}")
             raise e
+
 
 app = ClientLike(
     ':91:',
