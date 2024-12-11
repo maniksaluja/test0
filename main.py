@@ -46,11 +46,10 @@ app1 = ClientLike(
     bot_token=BOT_TOKEN_2,
     plugins=dict(root='Plugins1')
 )
-
 # Function to send logs to Telegram
 async def send_log_to_telegram(message):
     try:
-        escaped_message = message.replace('.', '\\\\.').replace('-', '\\\\-')  # Escaping backslashes correctly
+        escaped_message = message.replace('.', '\\.').replace('-', '\\-')  # Escaping backslashes correctly
         await log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=escaped_message, parse_mode=ParseMode.MARKDOWN_V2)
     except Exception as e:
         logging.error(f"Telegram notification failed: {e}")
@@ -101,7 +100,6 @@ async def check_requirements():
     ret = False
     status_message = ""
 
-    # Check message sending to specific channels with respective bot tokens
     try:
         print("Sending message to DB_CHANNEL_ID")
         m = await app.send_message(DB_CHANNEL_ID, '\\.')
@@ -168,7 +166,7 @@ async def check_requirements():
             await send_log_to_telegram(error_message)
             status_message += f"FSUB {x} bot1 ❌\n"
             ret = True
-        
+
         try:
             print(f"Notifier Bot sending message to FSUB channel {x}")
             m = await app1.send_message(x, '\\.')
