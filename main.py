@@ -29,6 +29,7 @@ class ClientLike(Client):
         obj = ResolvePeer(self)
         return await obj.resolve_peer(id)
 
+# Initialize app for bot 1
 app = ClientLike(
     ':91:',
     api_id=API_ID,
@@ -37,10 +38,11 @@ app = ClientLike(
     plugins=dict(root='Plugins')
 )
 
+# Initialize app for bot 2 with its respective API ID, API Hash, and Token
 app1 = ClientLike(
     ':91-1:',
-    api_id=API_ID,
-    api_hash=API_HASH,
+    api_id=API_ID_BOT2,  # Bot 2's API ID
+    api_hash=API_HASH_BOT2,  # Bot 2's API Hash
     bot_token=BOT_TOKEN_2,
     plugins=dict(root='Plugins1')
 )
