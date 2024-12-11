@@ -10,8 +10,8 @@ FSUB = [FSUB_1, FSUB_2]
 # Load other values from environment variables
 API_ID = int(getenv('API_ID', '28982634'))
 API_HASH = getenv('API_HASH', 'b54ae7b2e6a8874f82c860ec22e2a3df')
-BOT_TOKEN = getenv('BOT_TOKEN', '6944717193:AAG-4r2ffAWkGte2tzmWTJjiqGiZYMxcXwU')
-BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCOROy8Q')
+BOT_TOKEN = getenv('BOT_TOKEN', '7041654616:AAHKyFXsl0ucWxvAkMpwGuJbmrCQCvLD1zM')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7643758086:AAGyhG5pf6KCDZgoZ4Gr6y8_4mKaXTvBj3U')
 
 SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://manik:manik11@cluster0.iam3w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
