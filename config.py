@@ -1,110 +1,60 @@
-from pyrogram import Client, idle
-from config import *
-import sys
-import time
-from resolve import ResolvePeer
+from os import getenv
 
+# Ensure FSUB_1 and FSUB_2 are defined
+FSUB_1 = int(getenv('FSUB_1', '-1002210532935'))
+FSUB_2 = int(getenv('FSUB_2', '-1002319501979'))
+
+# Now define FSUB using FSUB_1 and FSUB_2
 FSUB = [FSUB_1, FSUB_2]
 
-class ClientLike(Client):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+# Load other values from environment variables
+API_ID = int(getenv('API_ID', '26980824'))
+API_HASH = getenv('API_HASH', 'fb044056059384d3bea54ab7ce915226')
 
-    async def resolve_peer(self, id):
-        obj = ResolvePeer(self)
-        return await obj.resolve_peer(id)
+# Add separate API ID and API Hash for both bots
+API_ID2 = int(getenv('API_ID_BOT1', '3510496'))  # Bot2 API ID
+API_HASH2 = getenv('API_HASH_BOT1', 'c65647776bb4e93defc9504571d2b990')  # Bot2 API Hash
 
-# Create Client instances for both bots
-app = ClientLike(
-    ':91:',
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
-    plugins=dict(root='Plugins')
-)
+BOT_TOKEN = getenv('BOT_TOKEN', '7041654616:AAHKyFXsl0ucWxvAkMpwGuJbmrCQCvLD1zM')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7643758086:AAGyhG5pf6KCDZgoZ4Gr6y8_4mKaXTvBj3U')
 
-app1 = ClientLike(
-    ':91-1:',
-    api_id=API_ID2,
-    api_hash=API_HASH2,
-    bot_token=BOT_TOKEN_2,
-    plugins=dict(root='Plugins1')
-)
+SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]
+MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://manik:manik11@cluster0.iam3w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
-async def send_vps_log(message):
-    """Send logs to VPS log channel via BOT_TOKEN_2"""
-    try:
-        await app1.send_message(VPSLOG_CHANNEL, message)
-    except Exception as e:
-        print(f"[ERROR] Could not send VPS log. Error: {e}")
+DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
+DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002171225671'))
+LOG_CHANNEL_ID = int(getenv('LOG_CHANNEL_ID', '-1002462410192')) if getenv('LOG_CHANNEL_ID') else None
 
-async def start():
-    await app.start()
-    await app1.start()
-    ret = False
-    log_message = []
+# variable for VPS logs
+VPSLOG_CHANNEL = int(getenv('VPSLOG_CHANNEL', '-1002319331790'))
 
-    try:
-        m = await app.send_message(DB_CHANNEL_ID, '.')
-        await m.delete()
-        log_message.append("Bot1: Successfully sent message in DB_CHANNEL_ID")
-    except Exception as e:
-        log_message.append(f"Bot1: Failed to send message in DB_CHANNEL_ID. Error: {e}")
-        ret = True
+AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '0'))  # Enter time in seconds, keep it 0 for disabling.
 
-    try:
-        m = await app.send_message(DB_CHANNEL_2_ID, '.')
-        await m.delete()
-        log_message.append("Bot1: Successfully sent message in DB_CHANNEL_2_ID")
-    except Exception as e:
-        log_message.append(f"Bot1: Failed to send message in DB_CHANNEL_2_ID. Error: {e}")
-        ret = True
+MUST_VISIT_LINK = "https://t.me/Ultra_XYZ/14"
 
-    try:
-        m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '.')
-        await m.delete()
-        log_message.append("Bot1: Successfully sent message in AUTO_SAVE_CHANNEL_ID")
-    except Exception as e:
-        log_message.append(f"Bot1: Failed to send message in AUTO_SAVE_CHANNEL_ID. Error: {e}")
-        ret = True
+LINK_GENERATE_IMAGE = getenv('LINK_GENERATE_IMAGE', 'https://graph.org/file/a1cce5b8533180c2f0029.jpg')
 
-    if LOG_CHANNEL_ID:
-        try:
-            m = await app.send_message(LOG_CHANNEL_ID, '.')
-            await m.delete()
-            log_message.append("Bot1: Successfully sent message in LOG_CHANNEL_ID")
-        except Exception as e:
-            log_message.append(f"Bot1: Failed to send message in LOG_CHANNEL_ID. Error: {e}")
-            ret = True
+TUTORIAL_LINK = getenv('TUTORIAL_LINK', 'https://t.me/Ultra_XYZ/16')
 
-    # Check for FSUB channels for bot1
-    for x in FSUB:
-        try:
-            m = await app.send_message(x, '.')
-            await m.delete()
-            log_message.append(f"Bot1: Successfully sent message in FSUB channel {x}")
-        except Exception as e:
-            log_message.append(f"Bot1: Failed to send message in FSUB channel {x}. Error: {e}")
-            ret = True
+CONNECT_TUTORIAL_LINK = getenv('CONNECT_TUTORIAL_LINK', 'https://t.me/Terabox_Sharing_Bot?start=batchoneaWZkYS1pZmRjfGhoZg==')
+SU_IMAGE = "https://graph.org/file/2342d37844afd1b9b96c0.jpg"
 
-    # Check for FSUB channels for bot2
-    for x in FSUB:
-        try:
-            m = await app1.send_message(x, '.')
-            await m.delete()
-            log_message.append(f"Bot2: Successfully sent message in FSUB channel {x}")
-        except Exception as e:
-            log_message.append(f"Bot2: Failed to send message in FSUB channel {x}. Error: {e}")
-            ret = True
+JOIN_MESSAGE = getenv('JOIN_MESSAGE', 'You Joined.')
+JOIN_IMAGE = getenv('JOIN_IMAGE', 'https://graph.org/file/015fddf0dbeb03b639647.jpg')
 
-    if ret:
-        await send_vps_log("\n".join(log_message))
-        sys.exit()
+LEAVE_CAPTION = getenv('LEAVE_CAPTION', 'I Love You.')
 
-    x = await app.get_me()
-    y = await app1.get_me()
-    log_message.append(f"@{x.username} started.")
-    log_message.append(f"@{y.username} started.")
+USELESS_MESSAGE = getenv('USELESS_MESSAGE', 'This is useless text.')
+USELESS_IMAGE = getenv('USELESS_IMAGE', 'https://graph.org/file/c579032c65d8353e43b0f.jpg')
 
-    await send_vps_log("\n".join(log_message))
-    await idle()
+STICKER_ID = 'CAACAgUAAxkBAAIiHWZjPezFGPWT_87VHnJUaschvGtrAAJtDgACYpoYV06rLlLA8dv_HgQ'
+
+CONTENT_SAVER = True
+
+EXPIRY_TIME = 30  # In days
+
+AUTO_SAVE_CHANNEL_ID = -1002425448719
+
+PHONE_NUMBER_IMAGE = "https://graph.org/file/2821554b6b082eb8741dc.jpg"
+
+WARN_IMAGE = 'https://graph.org/file/c86c68e014e471c1ce729.jpg'
