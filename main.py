@@ -45,6 +45,22 @@ app1 = ClientLike(
     plugins=dict(root='Plugins1')
 )
 
+# Dictionary to keep track of command usage
+last_command_usage = {}
+
+# Debounce function
+def debounce_command(user_id, command, debounce_time=1):
+    global last_command_usage
+    current_time = time.time()
+    if user_id not in last_command_usage:
+        last_command_usage[user_id] = {}
+    
+    if command in last_command_usage[user_id]:
+        if current_time - last_command_usage[user_id][command] < debounce_time:
+            return False  # Debounce
+    last_command_usage[user_id][command] = current_time
+    return True
+
 # Function to send logs to Telegram
 async def send_log_to_telegram(message):
     try:
