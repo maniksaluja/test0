@@ -3,7 +3,7 @@ from config import *
 import sys
 import time
 from resolve import ResolvePeer
-from pyrogram.errors import FloodWait
+from pyrogram.errors import FloodWait, BadRequest
 
 FSUB = [FSUB_1, FSUB_2]
 
@@ -28,6 +28,10 @@ class ClientLike(Client):
         except FloodWait as e:
             await self.send_message(VPSLOG_CHANNEL, f"[FLOOD WAIT] Sleeping for {e.x} seconds. Error: {str(e)}")
             time.sleep(e.x)
+            raise e
+        except BadRequest as e:
+            await self.send_message(VPSLOG_CHANNEL, f"[BAD REQUEST] Error: {str(e)}")
+            print(f"[BAD REQUEST] Error: {str(e)}")  # Printing detailed BadRequest error
             raise e
         except Exception as e:
             await self.send_message(VPSLOG_CHANNEL, f"[ERROR] Failed to send message in {message_func.__name__}. Error: {str(e)}")
