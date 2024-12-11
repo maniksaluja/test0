@@ -15,8 +15,8 @@ API_HASH = getenv('API_HASH', 'fb044056059384d3bea54ab7ce915226')
 API_ID2 = int(getenv('API_ID_BOT1', '3510496'))  # Bot2 API ID
 API_HASH2 = getenv('API_HASH_BOT1', 'c65647776bb4e93defc9504571d2b990')  # Bot2 API Hash
 
-BOT_TOKEN = getenv('BOT_TOKEN', '7041654616:AAHKyFXsl0ucWxvAkMpwGuJbmrCQCvLD1zM')
-BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7643758086:AAGyhG5pf6KCDZgoZ4Gr6y8_4mKaXTvBj3U')
+BOT_TOKEN = getenv('BOT_TOKEN', '7041654616:AAHqmt9LKjTL9lRAXj8HT_ZkjaWW9I-hz3Q')
+BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7643758086:AAFZkPY5yHGxeF4F7oQnxIFftSK05B7u6jY')
 
 SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://manik:manik11@cluster0.iam3w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
