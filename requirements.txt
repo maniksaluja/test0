@@ -2,3 +2,6 @@ pyrogram==2.0.100
 TgCrypto
 motor
 requests
+aiohttp
+pandas
+python-telegram-bot
