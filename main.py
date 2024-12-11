@@ -1,5 +1,8 @@
-import asyncio
-import logging
+from pyrogram import Client, idle
+from config import *
+import sys
+import time
+from resolve import ResolvePeer
 from pyrogram.errors import FloodWait, BadRequest
 
 # Set up logging
