@@ -46,10 +46,11 @@ app1 = ClientLike(
     bot_token=BOT_TOKEN_2,
     plugins=dict(root='Plugins1')
 )
+
 # Function to send logs to Telegram
 async def send_log_to_telegram(message):
     try:
-        escaped_message = message.replace('.', '\\.').replace('-', '\\-')
+        escaped_message = message.replace('.', '\.')
         await log_bot.send_message(chat_id=LOG_CHANNEL_ID, text=escaped_message, parse_mode=ParseMode.MARKDOWN_V2)
     except Exception as e:
         logging.error(f"Telegram notification failed: {e}")
@@ -67,7 +68,7 @@ async def monitor_api():
 
                 if response.status == 200:
                     message = (
-                        "✅ *API Working*\n"
+                        f"✅ *API Working*\n"
                         f"> *Response Time*: `{response_time}s`\n"
                         f"> *Bot Token*: `{BOT_TOKEN}`\n"
                         f"> *API Hash*: `{API_HASH}`"
@@ -75,7 +76,7 @@ async def monitor_api():
                     logging.info(message)
                 else:
                     message = (
-                        "⚠️ *API Issue*\n"
+                        f"⚠️ *API Issue*\n"
                         f"> *Status Code*: `{response.status}`\n"
                         f"> *Response Time*: `{response_time}s`\n"
                         f"> *Bot Token*: `{BOT_TOKEN}`\n"
@@ -87,8 +88,8 @@ async def monitor_api():
 
     except Exception as e:
         error_message = (
-            "❌ *API Call Failed*\n"
-            f"> *Error*: `{str(e).replace('.', '\\.').replace('-', '\\-')}`\n"
+            f"❌ *API Call Failed*\n"
+            f"> *Error*: `'{str(e).replace('.', '.')}'`\n"
             f"> *Bot Token*: `{BOT_TOKEN}`\n"
             f"> *API Hash*: `{API_HASH}`"
         )
@@ -100,49 +101,44 @@ async def check_requirements():
     ret = False
     status_message = ""
 
+    # Check message sending to specific channels with respective bot tokens
     try:
         print("Sending message to DB_CHANNEL_ID")
         m = await app.send_message(DB_CHANNEL_ID, '.')
         await m.delete()
-        status_message += "DB_CHANNEL_ID bot1 ✅\n"
+        status_message += f"DB_CHANNEL_ID bot1 ✅\n"
     except Exception as e:
-        error_message = (
-            f"Bot {BOT_TOKEN} cannot send message to DB_CHANNEL_ID: `{str(e).replace('.', '\\.').replace('-', '\\-')}`"
-        )
+        error_message = f"Bot {BOT_TOKEN} cannot send message to DB_CHANNEL_ID: `{str(e).replace('.', '.')}`"
         print(error_message)
         logging.error(error_message)
         await send_log_to_telegram(error_message)
-        status_message += "DB_CHANNEL_ID bot1 ❌\n"
+        status_message += f"DB_CHANNEL_ID bot1 ❌\n"
         ret = True
 
     try:
         print("Sending message to DB_CHANNEL_2_ID")
         m = await app.send_message(DB_CHANNEL_2_ID, '.')
         await m.delete()
-        status_message += "DB_CHANNEL_2_ID bot1 ✅\n"
+        status_message += f"DB_CHANNEL_2_ID bot1 ✅\n"
     except Exception as e:
-        error_message = (
-            f"Bot {BOT_TOKEN} cannot send message to DB_CHANNEL_2_ID: `{str(e).replace('.', '\\.').replace('-', '\\-')}`"
-        )
+        error_message = f"Bot {BOT_TOKEN} cannot send message to DB_CHANNEL_2_ID: `{str(e).replace('.', '.')}`"
         print(error_message)
         logging.error(error_message)
         await send_log_to_telegram(error_message)
-        status_message += "DB_CHANNEL_2_ID bot1 ❌\n"
+        status_message += f"DB_CHANNEL_2_ID bot1 ❌\n"
         ret = True
 
     try:
         print("Sending message to AUTO_SAVE_CHANNEL_ID")
         m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '.')
         await m.delete()
-        status_message += "AUTO_SAVE_CHANNEL_ID bot1 ✅\n"
+        status_message += f"AUTO_SAVE_CHANNEL_ID bot1 ✅\n"
     except Exception as e:
-        error_message = (
-            f"Bot {BOT_TOKEN} cannot send message to AUTO_SAVE_CHANNEL_ID: `{str(e).replace('.', '\\.').replace('-', '\\-')}`"
-        )
+        error_message = f"Bot {BOT_TOKEN} cannot send message to AUTO_SAVE_CHANNEL_ID: `{str(e).replace('.', '.')}`"
         print(error_message)
         logging.error(error_message)
         await send_log_to_telegram(error_message)
-        status_message += "AUTO_SAVE_CHANNEL_ID bot1 ❌\n"
+        status_message += f"AUTO_SAVE_CHANNEL_ID bot1 ❌\n"
         ret = True
 
     if LOG_CHANNEL_ID:
@@ -150,15 +146,13 @@ async def check_requirements():
             print("Sending message to LOG_CHANNEL_ID")
             m = await app.send_message(LOG_CHANNEL_ID, '.')
             await m.delete()
-            status_message += "LOG_CHANNEL_ID bot1 ✅\n"
+            status_message += f"LOG_CHANNEL_ID bot1 ✅\n"
         except Exception as e:
-            error_message = (
-                f"Bot {BOT_TOKEN} cannot send message to LOG_CHANNEL_ID: `{str(e).replace('.', '\\.').replace('-', '\\-')}`"
-            )
+            error_message = f"Bot {BOT_TOKEN} cannot send message to LOG_CHANNEL_ID: `{str(e).replace('.', '.')}`"
             print(error_message)
             logging.error(error_message)
             await send_log_to_telegram(error_message)
-            status_message += "LOG_CHANNEL_ID bot1 ❌\n"
+            status_message += f"LOG_CHANNEL_ID bot1 ❌\n"
             ret = True
 
     for x in FSUB:
@@ -168,24 +162,20 @@ async def check_requirements():
             await m.delete()
             status_message += f"FSUB {x} bot1 ✅\n"
         except Exception as e:
-            error_message = (
-                f"Bot {BOT_TOKEN} cannot send message in FSUB channel {x}: `{str(e).replace('.', '\\.').replace('-', '\\-')}`"
-            )
+            error_message = f"Bot {BOT_TOKEN} cannot send message in FSUB channel {x}: `{str(e).replace('.', '.')}`"
             print(error_message)
             logging.error(error_message)
             await send_log_to_telegram(error_message)
             status_message += f"FSUB {x} bot1 ❌\n"
             ret = True
-
+        
         try:
             print(f"Notifier Bot sending message to FSUB channel {x}")
             m = await app1.send_message(x, '.')
             await m.delete()
             status_message += f"FSUB {x} bot2 ✅\n"
         except Exception as e:
-            error_message = (
-                f"Notifier Bot cannot send message in FSUB channel {x}: `{str(e).replace('.', '\\.').replace('-', '\\-')}`"
-            )
+            error_message = f"Notifier Bot cannot send message in FSUB channel {x}: `{str(e).replace('.', '.')}`"
             print(error_message)
             logging.error(error_message)
             await send_log_to_telegram(error_message)
