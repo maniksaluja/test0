@@ -111,69 +111,99 @@ async def start():
         await app.start()
         print(f"Bot {BOT_TOKEN} started successfully")
     except Exception as e:
-        print(f"Failed to start Bot {BOT_TOKEN}: {e}")
+        error_message = f"Failed to start Bot {BOT_TOKEN}: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
     
     try:
         await app1.start()
         print(f"Bot {BOT_TOKEN_2} started successfully")
     except Exception as e:
-        print(f"Failed to start Bot {BOT_TOKEN_2}: {e}")
+        error_message = f"Failed to start Bot {BOT_TOKEN_2}: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
     
     # Monitor API after bot start
     await monitor_api()
 
     ret = False
     try:
+        print("Sending message to DB_CHANNEL_ID")
         m = await app.send_message(DB_CHANNEL_ID, '.')
         await m.delete()
     except Exception as e:
-        print(e)
-        print("Bot cannot able to message in DB channel.")
+        error_message = f"Bot cannot able to message in DB channel: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
         ret = True
+
     try:
+        print("Sending message to DB_CHANNEL_2_ID")
         m = await app.send_message(DB_CHANNEL_2_ID, '.')
         await m.delete()
     except Exception as e:
-        print(f"Bot cannot able to message in Backup DB channel: {e}")
+        error_message = f"Bot cannot able to message in Backup DB channel: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
         ret = True
+
     try:
+        print("Sending message to AUTO_SAVE_CHANNEL_ID")
         m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '.')
         await m.delete()
     except Exception as e:
-        print(f"Bot cannot able to message in Auto Save channel: {e}")
+        error_message = f"Bot cannot able to message in Auto Save channel: {e}"
+        print(error_message)
+        logging.error(error_message)
+        await send_log_to_telegram(error_message)
         ret = True
+
     if LOG_CHANNEL_ID:
         try:
+            print("Sending message to LOG_CHANNEL_ID")
             m = await app.send_message(LOG_CHANNEL_ID, '.')
             await m.delete()
         except Exception as e:
-            print(f"Bot cannot able to message in LOG channel: {e}")
-            logging.error(f"Failed to send message in LOG channel: {e}")
-            await send_log_to_telegram(f"Failed to send message in LOG channel: {e}")
+            error_message = f"Bot cannot able to message in LOG channel: {e}"
+            print(error_message)
+            logging.error(error_message)
+            await send_log_to_telegram(error_message)
             ret = True
+    
     for x in FSUB:
         try:
+            print(f"Sending message to FSUB channel {x}")
             m = await app.send_message(x, '.')
             await m.delete()
         except Exception as e:
-            print(f'Cannot send message in FSUB channel {x}: {e}')
-            logging.error(f"Cannot send message in FSUB channel {x}: {e}")
-            await send_log_to_telegram(f"Cannot send message in FSUB channel {x}: {e}")
+            error_message = f"Cannot send message in FSUB channel {x}: {e}"
+            print(error_message)
+            logging.error(error_message)
+            await send_log_to_telegram(error_message)
             ret = True
+    
     for x in FSUB:
         try:
+            print(f"Notifier Bot sending message to FSUB channel {x}")
             m = await app1.send_message(x, '.')
             await m.delete()
         except Exception as e:
-            print(f'Notifier Bot cannot send message in FSUB channel {x}: {e}')
-            logging.error(f"Notifier Bot cannot send message in FSUB channel {x}: {e}")
-            await send_log_to_telegram(f"Notifier Bot cannot send message in FSUB channel {x}: {e}")
+            error_message = f"Notifier Bot cannot send message in FSUB channel {x}: {e}"
+            print(error_message)
+            logging.error(error_message)
+            await send_log_to_telegram(error_message)
             ret = True
+    
     if ret:
         sys.exit()
 
     # Monitor API periodically
     while True:
+        print("Monitoring API")
         await monitor_api()
         await asyncio.sleep(60)  # Check every 60 seconds
 
