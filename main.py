@@ -19,6 +19,7 @@ class ClientLike(Client):
         """Track the response time for a given message request."""
         start_time = time.time()
         try:
+            print(f"Attempting to send message to channel ID: {args[0]}")  # Debugging statement
             result = await message_func(*args, **kwargs)
             response_time = time.time() - start_time
             if response_time > 5:  # If response time exceeds 5 seconds
@@ -53,10 +54,13 @@ async def start():
     await app1.start()
     ret = False
 
-    # Check if bots can send messages to channels and track response time
-    channels_to_check = [DB_CHANNEL_ID, DB_CHANNEL_2_ID, AUTO_SAVE_CHANNEL_ID, LOG_CHANNEL_ID] + FSUB
+    channels_to_check = [DB_CHANNEL_ID, DB_CHANNEL_2_ID, AUTO_SAVE_CHANNEL_ID] + FSUB
+    if LOG_CHANNEL_ID:
+        channels_to_check.append(LOG_CHANNEL_ID)
+
     for channel in channels_to_check:
         try:
+            print(f"Checking Bot1 message to channel ID: {channel}")  # Debugging statement
             await app.track_response_time(app.send_message, channel, '.')
         except Exception as e:
             print(f"[ERROR] Bot1 cannot send message in channel {channel}. Error: {e}")
@@ -64,6 +68,7 @@ async def start():
 
     for channel in FSUB:
         try:
+            print(f"Checking Bot2 message to channel ID: {channel}")  # Debugging statement
             await app1.track_response_time(app1.send_message, channel, '.')
         except Exception as e:
             print(f"[ERROR] Bot2 cannot send message in FSUB channel {channel}. Error: {e}")
