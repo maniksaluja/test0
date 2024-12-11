@@ -62,7 +62,10 @@ async def start():
         try:
             print(f"Checking Bot1 message to channel ID: {channel}")  # Debugging statement
             sent_msg = await app.track_response_time(app.send_message, channel, '.')
-            await app.delete_messages(channel, sent_msg.message_id)  # Delete the sent message
+            if hasattr(sent_msg, 'message_id'):
+                await app.delete_messages(channel, sent_msg.message_id)  # Delete the sent message
+            else:
+                print(f"[ERROR] Message does not have message_id in channel {channel}")
         except Exception as e:
             print(f"[ERROR] Bot1 cannot send message in channel {channel}. Error: {e}")
             ret = True
@@ -71,7 +74,10 @@ async def start():
         try:
             print(f"Checking Bot2 message to channel ID: {channel}")  # Debugging statement
             sent_msg = await app1.track_response_time(app1.send_message, channel, '.')
-            await app1.delete_messages(channel, sent_msg.message_id)  # Delete the sent message
+            if hasattr(sent_msg, 'message_id'):
+                await app1.delete_messages(channel, sent_msg.message_id)  # Delete the sent message
+            else:
+                print(f"[ERROR] Message does not have message_id in channel {channel}")
         except Exception as e:
             print(f"[ERROR] Bot2 cannot send message in FSUB channel {channel}. Error: {e}")
             ret = True
