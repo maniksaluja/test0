@@ -3,6 +3,10 @@ from config import *
 import sys
 import logging
 from resolve import ResolvePeer
+import pyrogram
+
+pyrogram.utils.MIN_CHAT_ID = -999999999999
+pyrogram.utils.MIN_CHANNEL_ID = -100999999999999
 
 # FSUB channels
 FSUB = [FSUB_1, FSUB_2]
