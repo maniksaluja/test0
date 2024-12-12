@@ -1,24 +1,18 @@
 from time import time
 import asyncio
-from pyrogram import Client  # Ensure that Client is imported
 from pyrogram.errors import FloodWait
 from pyrogram.types import (
     Message, InlineKeyboardButton as IKB, InlineKeyboardMarkup as IKM
 )
-from config import TUTORIAL_LINK, AUTO_DELETE_TIME, FSUB_1, FSUB_2
+from config import TUTORIAL_LINK
 
-# Improved retry mechanism with async handling
 async def tryer(func, *args, **kwargs):
     try:
         return await func(*args, **kwargs)
     except FloodWait as e:
         await asyncio.sleep(e.value)
         return await func(*args, **kwargs)
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
 
-# Function to format time into human-readable form
 def grt(seconds: int) -> str:
     if seconds < 60:
         return f"{seconds}S"
@@ -33,42 +27,28 @@ def alpha_grt(sec: int) -> str:
         return f"{int(sec/60)}M"
     return "60M+"
 
-# Setup auto-delete time
+from config import AUTO_DELETE_TIME
+
 AUTO_DELETE_STR = grt(AUTO_DELETE_TIME)
 
 startTime = time()
 
-# Importing necessary modules
 from .start import get_chats
 
-# Placeholder for markup
 markup = None
 
-# Asynchronous build function for generating markup with invite links
 async def build(_):
     global markup
     if not markup:
-        # Fetching the list of chats
-        chats = await get_chats(_)
+        chats = (await get_chats(_))
         new = []
-        
-        # Using asyncio.gather to process multiple invite links concurrently
-        tasks = [_.create_chat_invite_link(x.id, creates_join_request=True) for x in chats]
-        try:
-            invite_links = await asyncio.gather(*tasks)
-        except Exception as e:
-            print(f"Error in generating invite links: {e}")
-            invite_links = []
-        
-        # Assigning invite links to chats
-        for x, link in zip(chats, invite_links):
-            x.invite_link = link.invite_link
-        
-        # Getting two chats to create the markup
+        for x in chats:
+            y = await _.create_chat_invite_link(x.id, creates_join_request=True)
+            new.append(y.invite_link)
+        for x, y in enumerate(new):
+            chats[x].invite_link = y
         chat = chats[0]
         chat1 = chats[1]
-        
-        # Creating the inline keyboard markup
         markup = IKM(
             [
                 [
@@ -81,16 +61,3 @@ async def build(_):
             ]
         )
     return markup
-
-# The `FSUB` list to subscribe to channels
-FSUB = [FSUB_1, FSUB_2]
-
-# ClientLike class to extend Pyrogram's Client class
-class ClientLike(Client):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    # Async method to resolve peer from id
-    async def resolve_peer(self, id):
-        obj = ResolvePeer(self)
-        return await obj.resolve_peer(id)
