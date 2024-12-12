@@ -1,6 +1,7 @@
 import logging
 import re
 from typing import Union
+from functools import lru_cache
 import pyrogram
 from pyrogram import raw, utils
 from pyrogram.errors import PeerIdInvalid
@@ -17,6 +18,7 @@ MAX_USER_ID = 999999999999
 peer_cache = {}
 
 def get_peer_type(peer_id: int) -> str:
+    """Determine the type of peer (user, chat, channel)."""
     if peer_id < 0:
         if MIN_CHAT_ID <= peer_id:
             return "chat"
@@ -102,6 +104,12 @@ class ResolvePeer:
             except KeyError:
                 raise PeerIdInvalid
 
+        except PeerIdInvalid:
+            log.error(f"Invalid Peer ID: {peer_id}")
+            raise
+        except KeyError as e:
+            log.error(f"Peer not found in storage: {str(e)}")
+            raise
         except Exception as e:
             log.error(f"An unexpected error occurred: {str(e)}")
             raise
