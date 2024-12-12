@@ -1,14 +1,13 @@
 from pyrogram import Client, idle
 from config import *
 import sys
-from resolve import ResolvePeer
 import asyncio
-from pyrogram.errors import FloodWait
+from resolve import ResolvePeer
 import logging
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class ClientLike(Client):
     def __init__(self, *args, **kwargs):
@@ -41,7 +40,7 @@ async def send_message_with_timeout(client, channel_id, message, retries=3, dela
     """
     for _ in range(retries):
         try:
-            await client.send_message(channel_id, message, timeout=10)  # 10 seconds timeout
+            await client.send_message(channel_id, message)  # Removed timeout argument
             logger.info(f"Message sent to channel {channel_id} successfully.")
             return True
         except asyncio.TimeoutError:
@@ -63,9 +62,11 @@ async def check_channel_access(client, channels):
         if channel_id is None:
             logger.warning(f"Channel ID is None for {client.name}. Skipping.")
             continue
-        success = await send_message_with_timeout(client, channel_id, '.')
-        if not success:
-            logger.error(f"Error accessing channel {channel_id} for {client.name}. Exiting.")
+        try:
+            msg = await client.send_message(channel_id, '.')
+            await msg.delete()
+        except Exception as e:
+            logger.error(f"Error accessing channel {channel_id} for {client.name}: {e}")
             return False, channel_id
     return True, None
 
@@ -75,8 +76,6 @@ async def start():
     """
     await app.start()
     await app1.start()
-
-    logger.info("Bot instances started.")
     
     channels_to_check = [
         DB_CHANNEL_ID,
