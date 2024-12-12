@@ -6,11 +6,16 @@ from pyrogram.types import (
 )
 from config import TUTORIAL_LINK
 
+# Optimized tryer function to handle FloodWait with efficiency
 async def tryer(func, *args, **kwargs):
     try:
         return await func(*args, **kwargs)
     except FloodWait as e:
-        await asyncio.sleep(e.value)
+        wait_time = e.value
+        # Setting delay for a reasonable bot speed
+        if wait_time > 10:
+            wait_time = 10  # Max delay to avoid slowing down the bot too much
+        await asyncio.sleep(wait_time)
         return await func(*args, **kwargs)
 
 def grt(seconds: int) -> str:
