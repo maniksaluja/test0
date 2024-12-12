@@ -19,7 +19,7 @@ app = ClientLike(
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
     plugins=dict(root='Plugins'),
-    workers=50  # Added worker threads for main bot
+    workers=30  # Added worker threads for main bot
 )
 
 app1 = ClientLike(
@@ -28,7 +28,7 @@ app1 = ClientLike(
     api_hash=API_HASH2,
     bot_token=BOT_TOKEN_2,
     plugins=dict(root='Plugins1'),
-    workers=50  # Added worker threads for notifier bot
+    workers=4  # Added worker threads for notifier bot
 )
 
 async def start():
