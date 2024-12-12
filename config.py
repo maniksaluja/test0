@@ -1,8 +1,8 @@
 from os import getenv
 
 # Ensure FSUB_1 and FSUB_2 are defined
-FSUB_1 = int(getenv('FSUB_1', '-1002319331790'))
-FSUB_2 = int(getenv('FSUB_2', '-1002319331790'))
+FSUB_1 = int(getenv('FSUB_1', '-1002210532935'))
+FSUB_2 = int(getenv('FSUB_2', '-1002210532935'))
 
 # Now define FSUB using FSUB_1 and FSUB_2
 FSUB = [FSUB_1, FSUB_2]
@@ -50,7 +50,7 @@ CONTENT_SAVER = True
 
 EXPIRY_TIME = 30  # In days
 
-AUTO_SAVE_CHANNEL_ID = 0
+AUTO_SAVE_CHANNEL_ID = -1002319331790
 
 PHONE_NUMBER_IMAGE = "https://graph.org/file/2821554b6b082eb8741dc.jpg"
 
