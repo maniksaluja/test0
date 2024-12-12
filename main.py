@@ -3,8 +3,6 @@ from config import *
 import sys
 from resolve import ResolvePeer
 
-FSUB = [FSUB_1, FSUB_2]
-
 class ClientLike(Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -13,6 +11,7 @@ class ClientLike(Client):
         obj = ResolvePeer(self)
         return await obj.resolve_peer(id)
 
+# Bot instances
 app = ClientLike(
     ':91:',
     api_id=API_ID,
@@ -30,16 +29,22 @@ app1 = ClientLike(
 )
 
 async def check_channel_access(client, channels):
+    """
+    Verify that the bot can send messages in the specified channels.
+    """
     for channel_id in channels:
         try:
             msg = await client.send_message(channel_id, '.')
             await msg.delete()
         except Exception as e:
-            print(f"Error accessing channel {channel_id} with {client.name}: {e}")
+            print(f"Error accessing channel {channel_id} for {client.name}: {e}")
             return False
     return True
 
 async def start():
+    """
+    Start both bot clients and validate their access to required channels.
+    """
     await app.start()
     await app1.start()
     
@@ -50,6 +55,7 @@ async def start():
         LOG_CHANNEL_ID
     ] + FSUB
 
+    # Check channel access for both bots
     if not (await check_channel_access(app, channels_to_check) and await check_channel_access(app1, FSUB)):
         print("Required channels are not accessible. Exiting.")
         await app.stop()
