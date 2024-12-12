@@ -1,45 +1,18 @@
-from pyrogram import Client, idle
-from config import *
-import sys
-from resolve import ResolvePeer
-
-class ClientLike(Client):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    async def resolve_peer(self, id):
-        obj = ResolvePeer(self)
-        return await obj.resolve_peer(id)
-
-# Bot instances
-app = ClientLike(
-    ':91:',
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
-    plugins=dict(root='Plugins')
-)
-
-app1 = ClientLike(
-    ':91-1:',
-    api_id=API_ID2,
-    api_hash=API_HASH2,
-    bot_token=BOT_TOKEN_2,
-    plugins=dict(root='Plugins1')
-)
-
 async def check_channel_access(client, channels):
     """
     Verify that the bot can send messages in the specified channels.
     """
     for channel_id in channels:
+        if channel_id is None:
+            print(f"Channel ID is None for {client.name}. Skipping.")
+            continue
         try:
             msg = await client.send_message(channel_id, '.')
             await msg.delete()
         except Exception as e:
             print(f"Error accessing channel {channel_id} for {client.name}: {e}")
-            return False
-    return True
+            return False, channel_id
+    return True, None
 
 async def start():
     """
@@ -56,8 +29,14 @@ async def start():
     ] + FSUB
 
     # Check channel access for both bots
-    if not (await check_channel_access(app, channels_to_check) and await check_channel_access(app1, FSUB)):
-        print("Required channels are not accessible. Exiting.")
+    app_status, app_failed_channel = await check_channel_access(app, channels_to_check)
+    app1_status, app1_failed_channel = await check_channel_access(app1, FSUB)
+
+    if not (app_status and app1_status):
+        if not app_status:
+            print(f"Bot @:91: failed to access channel: {app_failed_channel}")
+        if not app1_status:
+            print(f"Bot @:91-1: failed to access channel: {app1_failed_channel}")
         await app.stop()
         await app1.stop()
         sys.exit()
@@ -69,7 +48,3 @@ async def start():
     print(f'@{bot2_info.username} started.')
 
     await idle()
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(start())
