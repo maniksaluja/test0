@@ -41,15 +41,15 @@ async def send_message_with_timeout(client, channel_id, message, retries=3, dela
     for _ in range(retries):
         try:
             await client.send_message(channel_id, message)  # Removed timeout argument
-            logger.info(f"Message sent to channel {channel_id} successfully.")
+            logger.info(f"Message sent to channel {channel_id} successfully for bot {client.name}.")
             return True
         except asyncio.TimeoutError:
-            logger.warning(f"Timeout occurred while sending message to channel {channel_id}. Retrying...")
+            logger.warning(f"Timeout occurred while sending message to channel {channel_id} for bot {client.name}. Retrying...")
         except FloodWait as e:
-            logger.warning(f"FloodWait occurred: waiting for {e.x} seconds")
+            logger.warning(f"FloodWait occurred for bot {client.name}: waiting for {e.x} seconds")
             await asyncio.sleep(e.x)
         except Exception as e:
-            logger.error(f"Error occurred: {e}")
+            logger.error(f"Error occurred for bot {client.name}: {e}")
             return False
         await asyncio.sleep(delay)  # Delay before retrying
     return False  # If retries are exhausted
@@ -66,7 +66,7 @@ async def check_channel_access(client, channels):
             msg = await client.send_message(channel_id, '.')
             await msg.delete()
         except Exception as e:
-            logger.error(f"Error accessing channel {channel_id} for {client.name}: {e}")
+            logger.error(f"Error accessing channel {channel_id} for bot {client.name}: {e}")
             return False, channel_id
     return True, None
 
@@ -90,9 +90,9 @@ async def start():
 
     if not (app_status and app1_status):
         if not app_status:
-            logger.error(f"Bot @:91: failed to access channel: {app_failed_channel}")
+            logger.error(f"Bot @:91: failed to access channel {app_failed_channel}.")
         if not app1_status:
-            logger.error(f"Bot @:91-1: failed to access channel: {app1_failed_channel}")
+            logger.error(f"Bot @:91-1: failed to access channel {app1_failed_channel}.")
         await app.stop()
         await app1.stop()
         sys.exit()
@@ -100,8 +100,8 @@ async def start():
     bot1_info = await app.get_me()
     bot2_info = await app1.get_me()
 
-    logger.info(f'@{bot1_info.username} started.')
-    logger.info(f'@{bot2_info.username} started.')
+    logger.info(f'Bot @{bot1_info.username} started successfully.')
+    logger.info(f'Bot @{bot2_info.username} started successfully.')
 
     await idle()
 
