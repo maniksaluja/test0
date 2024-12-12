@@ -74,16 +74,38 @@ class ResolvePeer:
                 result = await self.cl.invoke(
                     raw.functions.messages.GetChats(id=[-peer_id])
                 )
-                await self.cl.fetch_peers(result)
+                # Process chats properly
+                for chat in result.chats:
+                    await self.cl.fetch_peers([chat])
             else:  # channel
                 result = await self.cl.invoke(
                     raw.functions.channels.GetChannels(
                         id=[raw.types.InputChannel(channel_id=utils.get_channel_id(peer_id), access_hash=0)]
                     )
                 )
-                await self.cl.fetch_peers(result)
+                # Process channels properly
+                for channel in result.chats:
+                    await self.cl.fetch_peers([channel])
 
         try:
             return await self.cl.storage.get_peer_by_id(peer_id)
         except KeyError:
             raise PeerIdInvalid
+
+    async def send_message_to_channel(self, channel_id: int, message: str):
+        """Send message to a channel after ensuring bot has admin access."""
+        try:
+            await self.ensure_bot_can_message(channel_id)
+            await self.cl.send_message(chat_id=channel_id, text=message)
+        except Exception as e:
+            log.error(f"Failed to send message: {e}")
+
+    async def ensure_bot_can_message(self, channel_id: int):
+        """Ensure bot has admin rights before sending a message."""
+        try:
+            member = await self.cl.get_chat_member(channel_id, "me")
+            if member.status not in ["administrator", "creator"]:
+                raise PermissionError("Bot does not have admin rights in the channel.")
+        except Exception as e:
+            log.error(f"Error checking admin status: {e}")
+            raise
