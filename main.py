@@ -1,13 +1,14 @@
 from pyrogram import Client, idle
 from config import *
 import sys
-import asyncio
-from resolve import ResolvePeer
 import logging
-from pyrogram.errors import FloodWait, BadRequest, NetworkError
+from resolve import ResolvePeer
 
-# Set up logging with timestamps
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+# FSUB channels
+FSUB = [FSUB_1, FSUB_2]
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ClientLike(Client):
@@ -18,7 +19,7 @@ class ClientLike(Client):
         obj = ResolvePeer(self)
         return await obj.resolve_peer(id)
 
-# Bot instances
+# Initialize bot instances
 app = ClientLike(
     ':91:',
     api_id=API_ID,
@@ -35,100 +36,53 @@ app1 = ClientLike(
     plugins=dict(root='Plugins1')
 )
 
-async def send_message_with_timeout(client, channel_id, message, retries=3, delay=5):
-    """
-    Function to send message with retries and timeout handling.
-    """
-    for attempt in range(1, retries + 1):
-        try:
-            await client.send_message(channel_id, message)  # Removed timeout argument
-            logger.info(f"Message sent to channel {channel_id} successfully for bot {client.name}.")
-            return True
-        except asyncio.TimeoutError:
-            logger.warning(f"Timeout occurred (Attempt {attempt}/{retries}) while sending message to channel {channel_id} for bot {client.name}. Retrying...")
-        except FloodWait as e:
-            logger.warning(f"FloodWait occurred for bot {client.name}: waiting for {e.x} seconds")
-            await asyncio.sleep(e.x)
-        except NetworkError as e:
-            logger.error(f"NetworkError: Network issue while sending message for bot {client.name}: {e}. Retrying...")
-        except BadRequest as e:
-            logger.error(f"BadRequest error for bot {client.name}: {e}. Skipping message sending.")
-            return False
-        except Exception as e:
-            logger.error(f"Unexpected error occurred for bot {client.name}: {e}")
-            return False
-        await asyncio.sleep(delay)  # Delay before retrying
-    return False  # If retries are exhausted
-
-async def check_channel_access(client, channels, retries=3, delay=5):
-    """
-    Verify that the bot can send messages in the specified channels with retry logic.
-    """
-    for channel_id in channels:
-        if channel_id is None:
-            logger.warning(f"Channel ID is None for {client.name}. Skipping.")
-            continue
-        for attempt in range(1, retries + 1):
-            try:
-                msg = await client.send_message(channel_id, '.')
-                await msg.delete()
-                logger.info(f"Access confirmed for channel {channel_id} for bot {client.name}.")
-                break
-            except BadRequest as e:
-                logger.error(f"BadRequest error while checking access for channel {channel_id} for {client.name}: {e}")
-                return False, channel_id
-            except Exception as e:
-                logger.error(f"Error accessing channel {channel_id} for bot {client.name} on attempt {attempt}/{retries}: {e}")
-                if attempt == retries:
-                    return False, channel_id
-                await asyncio.sleep(delay)  # Delay before retrying
-    return True, None
-
 async def start():
-    """
-    Start both bot clients and validate their access to required channels.
-    """
     await app.start()
     await app1.start()
-    
-    # Channels for BOT1
-    bot1_channels_to_check = [
-        DB_CHANNEL_ID,    # BOT1 DB channel
-        DB_CHANNEL_2_ID,  # BOT1 DB Channel 2
-        AUTO_SAVE_CHANNEL_ID,  # BOT1 Auto Save Channel (Optional)
-        LOG_CHANNEL_ID   # BOT1 Log Channel (Optional)
-    ] + FSUB  # FSUB can be checked by both bots
 
-    # Channels for BOT2 (only FSUB channels)
-    bot2_channels_to_check = FSUB
-    
-    # Check channel access for BOT1
-    app_status, app_failed_channel = await check_channel_access(app, bot1_channels_to_check)
-    # Check channel access for BOT2
-    app1_status, app1_failed_channel = await check_channel_access(app1, bot2_channels_to_check)
+    # Flag to track errors
+    ret = False
 
-    if not (app_status and app1_status):
-        if not app_status:
-            logger.error(f"Bot @:91: failed to access channel {app_failed_channel}.")
-        if not app1_status:
-            logger.error(f"Bot @:91-1: failed to access channel {app1_failed_channel}.")
-        await app.stop()
-        await app1.stop()
+    # Function to check and send messages to a channel
+    async def check_and_send(client, channel_id):
+        try:
+            m = await client.send_message(channel_id, '.')
+            await m.delete()
+            logger.info(f"Message sent and deleted successfully in {channel_id}")
+        except Exception as e:
+            logger.error(f"Error sending message to channel {channel_id}: {e}")
+            return True
+        return False
+
+    # Validate access for BOT1
+    ret |= await check_and_send(app, DB_CHANNEL_ID)
+    ret |= await check_and_send(app, DB_CHANNEL_2_ID)
+    ret |= await check_and_send(app, AUTO_SAVE_CHANNEL_ID)
+    
+    if LOG_CHANNEL_ID:
+        ret |= await check_and_send(app, LOG_CHANNEL_ID)
+
+    # Validate access for FSUB channels for both bots
+    for x in FSUB:
+        ret |= await check_and_send(app, x)
+    
+    # Validate access for FSUB channels for BOT2
+    for x in FSUB:
+        ret |= await check_and_send(app1, x)
+
+    if ret:
+        logger.error("One or more channels are not accessible. Exiting...")
         sys.exit()
 
+    # Bot info and success message
     bot1_info = await app.get_me()
     bot2_info = await app1.get_me()
 
     logger.info(f'Bot @{bot1_info.username} started successfully.')
     logger.info(f'Bot @{bot2_info.username} started successfully.')
 
-    # Send test message with retries and log results
-    if not await send_message_with_timeout(app, DB_CHANNEL_ID, "Test message from bot @The_TeraBox_bot"):
-        logger.error(f"Failed to send message from bot @{bot1_info.username} to channel {DB_CHANNEL_ID}.")
-    if not await send_message_with_timeout(app1, DB_CHANNEL_2_ID, "Test message from bot @Approvel87473bot"):
-        logger.error(f"Failed to send message from bot @{bot2_info.username} to channel {DB_CHANNEL_2_ID}.")
-
     await idle()
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(start())
