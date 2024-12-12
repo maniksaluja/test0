@@ -4,10 +4,10 @@ import sys
 import asyncio
 from resolve import ResolvePeer
 import logging
-from pyrogram.errors import FloodWait, BadRequest
+from pyrogram.errors import FloodWait, BadRequest, NetworkError
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Set up logging with timestamps
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class ClientLike(Client):
@@ -39,16 +39,18 @@ async def send_message_with_timeout(client, channel_id, message, retries=3, dela
     """
     Function to send message with retries and timeout handling.
     """
-    for _ in range(retries):
+    for attempt in range(1, retries + 1):
         try:
             await client.send_message(channel_id, message)  # Removed timeout argument
             logger.info(f"Message sent to channel {channel_id} successfully for bot {client.name}.")
             return True
         except asyncio.TimeoutError:
-            logger.warning(f"Timeout occurred while sending message to channel {channel_id} for bot {client.name}. Retrying...")
+            logger.warning(f"Timeout occurred (Attempt {attempt}/{retries}) while sending message to channel {channel_id} for bot {client.name}. Retrying...")
         except FloodWait as e:
             logger.warning(f"FloodWait occurred for bot {client.name}: waiting for {e.x} seconds")
             await asyncio.sleep(e.x)
+        except NetworkError as e:
+            logger.error(f"NetworkError: Network issue while sending message for bot {client.name}: {e}. Retrying...")
         except BadRequest as e:
             logger.error(f"BadRequest error for bot {client.name}: {e}. Skipping message sending.")
             return False
@@ -58,23 +60,28 @@ async def send_message_with_timeout(client, channel_id, message, retries=3, dela
         await asyncio.sleep(delay)  # Delay before retrying
     return False  # If retries are exhausted
 
-async def check_channel_access(client, channels):
+async def check_channel_access(client, channels, retries=3, delay=5):
     """
-    Verify that the bot can send messages in the specified channels.
+    Verify that the bot can send messages in the specified channels with retry logic.
     """
     for channel_id in channels:
         if channel_id is None:
             logger.warning(f"Channel ID is None for {client.name}. Skipping.")
             continue
-        try:
-            msg = await client.send_message(channel_id, '.')
-            await msg.delete()
-        except BadRequest as e:
-            logger.error(f"BadRequest error while checking access for channel {channel_id} for {client.name}: {e}")
-            return False, channel_id
-        except Exception as e:
-            logger.error(f"Error accessing channel {channel_id} for bot {client.name}: {e}")
-            return False, channel_id
+        for attempt in range(1, retries + 1):
+            try:
+                msg = await client.send_message(channel_id, '.')
+                await msg.delete()
+                logger.info(f"Access confirmed for channel {channel_id} for bot {client.name}.")
+                break
+            except BadRequest as e:
+                logger.error(f"BadRequest error while checking access for channel {channel_id} for {client.name}: {e}")
+                return False, channel_id
+            except Exception as e:
+                logger.error(f"Error accessing channel {channel_id} for bot {client.name} on attempt {attempt}/{retries}: {e}")
+                if attempt == retries:
+                    return False, channel_id
+                await asyncio.sleep(delay)  # Delay before retrying
     return True, None
 
 async def start():
