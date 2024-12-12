@@ -1,3 +1,33 @@
+from pyrogram import Client, idle
+from config import *
+import sys
+from resolve import ResolvePeer
+
+class ClientLike(Client):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    async def resolve_peer(self, id):
+        obj = ResolvePeer(self)
+        return await obj.resolve_peer(id)
+
+# Bot instances
+app = ClientLike(
+    ':91:',
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN,
+    plugins=dict(root='Plugins')
+)
+
+app1 = ClientLike(
+    ':91-1:',
+    api_id=API_ID2,
+    api_hash=API_HASH2,
+    bot_token=BOT_TOKEN_2,
+    plugins=dict(root='Plugins1')
+)
+
 async def check_channel_access(client, channels):
     """
     Verify that the bot can send messages in the specified channels.
@@ -48,3 +78,7 @@ async def start():
     print(f'@{bot2_info.username} started.')
 
     await idle()
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(start())
