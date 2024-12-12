@@ -39,13 +39,16 @@ async def cjr(_: Client, r):
             await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
         else:
             await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+        
+        # Add user to the database
         await add_user_2(r.from_user.id)
         
     except UserAlreadyParticipant:
         pass  # Ignore if user is already a participant
     except FloodWait as e:
         print(f"Flood wait error: {e.x} seconds")
-        await asyncio.sleep(e.x)
+        await asyncio.sleep(e.x)  # Wait for the flood wait time
+        await cjr(_, r)  # Retry approving the request
     except BadRequest as e:
         if e.MESSAGE == "400 HIDE_REQUESTER_MISSING":
             print("Hide requester missing, can't approve join request.")
