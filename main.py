@@ -84,16 +84,21 @@ async def start():
     await app.start()
     await app1.start()
     
-    channels_to_check = [
-        DB_CHANNEL_ID,
-        DB_CHANNEL_2_ID,
-        AUTO_SAVE_CHANNEL_ID,
-        LOG_CHANNEL_ID
-    ] + FSUB
+    # Channels for BOT1
+    bot1_channels_to_check = [
+        DB_CHANNEL_ID,    # BOT1 DB channel
+        DB_CHANNEL_2_ID,  # BOT1 DB Channel 2
+        AUTO_SAVE_CHANNEL_ID,  # BOT1 Auto Save Channel (Optional)
+        LOG_CHANNEL_ID   # BOT1 Log Channel (Optional)
+    ] + FSUB  # FSUB can be checked by both bots
 
-    # Check channel access for both bots
-    app_status, app_failed_channel = await check_channel_access(app, channels_to_check)
-    app1_status, app1_failed_channel = await check_channel_access(app1, FSUB)
+    # Channels for BOT2 (only FSUB channels)
+    bot2_channels_to_check = FSUB
+    
+    # Check channel access for BOT1
+    app_status, app_failed_channel = await check_channel_access(app, bot1_channels_to_check)
+    # Check channel access for BOT2
+    app1_status, app1_failed_channel = await check_channel_access(app1, bot2_channels_to_check)
 
     if not (app_status and app1_status):
         if not app_status:
