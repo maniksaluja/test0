@@ -4,6 +4,7 @@ import sys
 import asyncio
 from resolve import ResolvePeer
 import logging
+from pyrogram.errors import FloodWait, BadRequest
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -48,8 +49,11 @@ async def send_message_with_timeout(client, channel_id, message, retries=3, dela
         except FloodWait as e:
             logger.warning(f"FloodWait occurred for bot {client.name}: waiting for {e.x} seconds")
             await asyncio.sleep(e.x)
+        except BadRequest as e:
+            logger.error(f"BadRequest error for bot {client.name}: {e}. Skipping message sending.")
+            return False
         except Exception as e:
-            logger.error(f"Error occurred for bot {client.name}: {e}")
+            logger.error(f"Unexpected error occurred for bot {client.name}: {e}")
             return False
         await asyncio.sleep(delay)  # Delay before retrying
     return False  # If retries are exhausted
@@ -65,6 +69,9 @@ async def check_channel_access(client, channels):
         try:
             msg = await client.send_message(channel_id, '.')
             await msg.delete()
+        except BadRequest as e:
+            logger.error(f"BadRequest error while checking access for channel {channel_id} for {client.name}: {e}")
+            return False, channel_id
         except Exception as e:
             logger.error(f"Error accessing channel {channel_id} for bot {client.name}: {e}")
             return False, channel_id
@@ -102,6 +109,12 @@ async def start():
 
     logger.info(f'Bot @{bot1_info.username} started successfully.')
     logger.info(f'Bot @{bot2_info.username} started successfully.')
+
+    # Send test message with retries and log results
+    if not await send_message_with_timeout(app, DB_CHANNEL_ID, "Test message from bot @The_TeraBox_bot"):
+        logger.error(f"Failed to send message from bot @{bot1_info.username} to channel {DB_CHANNEL_ID}.")
+    if not await send_message_with_timeout(app1, DB_CHANNEL_2_ID, "Test message from bot @Approvel87473bot"):
+        logger.error(f"Failed to send message from bot @{bot2_info.username} to channel {DB_CHANNEL_2_ID}.")
 
     await idle()
 
