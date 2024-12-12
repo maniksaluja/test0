@@ -13,6 +13,9 @@ MIN_CHAT_ID = -2147483647
 MAX_USER_ID_OLD = 2147483647
 MAX_USER_ID = 999999999999
 
+# Caching to store resolved peer IDs for faster lookups
+peer_cache = {}
+
 def get_peer_type(peer_id: int) -> str:
     if peer_id < 0:
         if MIN_CHAT_ID <= peer_id:
@@ -37,7 +40,13 @@ class ResolvePeer:
         if not self.cl.is_connected:
             raise ConnectionError("Client has not been started yet")
 
+        # Check if the peer ID is already in the cache
+        if peer_id in peer_cache:
+            log.debug(f"Peer ID {peer_id} found in cache.")
+            return peer_cache[peer_id]
+
         try:
+            # First try to resolve from storage
             return await self.cl.storage.get_peer_by_id(peer_id)
         except KeyError:
             log.debug(f"Peer ID {peer_id} not found in storage. Attempting to resolve.")
@@ -46,18 +55,23 @@ class ResolvePeer:
                 if peer_id in ("self", "me"):
                     return raw.types.InputPeerSelf()
 
+                # Clean up the username for valid format
                 peer_id = re.sub(r"[@+\s]", "", peer_id.lower())
                 try:
-                    int(peer_id)
+                    int(peer_id)  # Try to convert to int
                 except ValueError:
                     try:
+                        # Resolve by username
                         return await self.cl.storage.get_peer_by_username(peer_id)
                     except KeyError:
                         log.debug(f"Username {peer_id} not found in storage. Invoking ResolveUsername.")
                         await self.cl.invoke(raw.functions.contacts.ResolveUsername(username=peer_id))
-                        return await self.cl.storage.get_peer_by_username(peer_id)
+                        resolved_peer = await self.cl.storage.get_peer_by_username(peer_id)
+                        peer_cache[peer_id] = resolved_peer  # Cache the resolved peer
+                        return resolved_peer
                 else:
                     try:
+                        # Resolve by phone number
                         return await self.cl.storage.get_peer_by_phone_number(peer_id)
                     except KeyError:
                         raise PeerIdInvalid
@@ -79,8 +93,12 @@ class ResolvePeer:
                         id=[raw.types.InputChannel(channel_id=utils.get_channel_id(peer_id), access_hash=0)]
                     )
                 )
+
+            # Cache the resolved peer for future use
             try:
-                return await self.cl.storage.get_peer_by_id(peer_id)
+                resolved_peer = await self.cl.storage.get_peer_by_id(peer_id)
+                peer_cache[peer_id] = resolved_peer
+                return resolved_peer
             except KeyError:
                 raise PeerIdInvalid
 
