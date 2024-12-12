@@ -1,11 +1,11 @@
 from time import time
 import asyncio
+from pyrogram import Client  # Ensure that Client is imported
 from pyrogram.errors import FloodWait
 from pyrogram.types import (
     Message, InlineKeyboardButton as IKB, InlineKeyboardMarkup as IKM
 )
-from config import TUTORIAL_LINK, AUTO_DELETE_TIME
-from config import FSUB_1, FSUB_2
+from config import TUTORIAL_LINK, AUTO_DELETE_TIME, FSUB_1, FSUB_2
 
 # Improved retry mechanism with async handling
 async def tryer(func, *args, **kwargs):
@@ -94,73 +94,3 @@ class ClientLike(Client):
     async def resolve_peer(self, id):
         obj = ResolvePeer(self)
         return await obj.resolve_peer(id)
-
-# Two client instances for the bot
-app = ClientLike(
-    ':91:',
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
-    plugins=dict(root='Plugins')
-)
-
-app1 = ClientLike(
-    ':91-1:',
-    api_id=API_ID2,
-    api_hash=API_HASH2,
-    bot_token=BOT_TOKEN_2,
-    plugins=dict(root='Plugins1')
-)
-
-# Starting the bot and checking message sending capabilities
-async def start():
-    await app.start()
-    await app1.start()
-    ret = False
-    try:
-        m = await app.send_message(DB_CHANNEL_ID, '.')
-        await m.delete()
-    except Exception as e:
-        print(e)
-        print("Bot cannot able to message in DB channel.")
-        ret = True
-    try:
-        m = await app.send_message(DB_CHANNEL_2_ID, '.')
-        await m.delete()
-    except:
-        print("Bot cannot able to message in Backup DB channel.")
-        ret = True
-    try:
-        m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '.')
-        await m.delete()
-    except:
-        print("Bot cannot able to message in Auto Save channel.")
-        ret = True
-    if LOG_CHANNEL_ID:
-        try:
-            m = await app.send_message(LOG_CHANNEL_ID, '.')
-            await m.delete()
-        except:
-            print("Bot cannot able to message in LOG channel.")
-            ret = True
-    for x in FSUB:
-        try:
-            m = await app.send_message(x, '.')
-            await m.delete()
-        except:
-            print(f'Cannot send message in FSUB channel {x}, Quitting.')
-            ret = True
-    for x in FSUB:
-        try:
-            m = await app1.send_message(x, '.')
-            await m.delete()
-        except:
-            print(f'Notifier Bot cannot send message in FSUB channel {x}, Quitting.')
-            ret = True
-    if ret:
-        sys.exit()
-    x = await app.get_me()
-    y = await app1.get_me()
-    print(f'@{x.username} started.')
-    print(f'@{y.username} started.')
-    await idle()
