@@ -1,51 +1,61 @@
-from config import BOT_TOKEN
-import requests
+import aiohttp
 import json
+from config import BOT_TOKEN
 
 base = f'https://api.telegram.org/bot{BOT_TOKEN}/'
 
-def getChatMember(chat_id, user_id):
-    url = base + f'getChatMember?chat_id={chat_id}&user_id={user_id}'
-    return requests.get(url).json()
+class TelegramBot:
+    def __init__(self):
+        self.session = aiohttp.ClientSession()
 
-def sendMessage(chat_id, text, reply_markup=None):
-    if reply_markup:
-        url = base + f'sendMessage?chat_id={chat_id}&text={text}&reply_markup={json.dumps(reply_markup)}'
-    else:
-        url = base + f'sendMessage?chat_id={chat_id}&text={text}'
-    return requests.get(url).json()
+    async def api_call(self, method, params=None):
+        url = base + method
+        try:
+            async with self.session.get(url, params=params) as response:
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    return {"ok": False, "error_code": response.status, "description": await response.text()}
+        except aiohttp.ClientError as e:
+            return {"ok": False, "error": str(e)}
 
-def editMessageText(chat_id, msg_id, text, reply_markup=None):
-    if reply_markup:
-        url = base + f'editMessageText?chat_id={chat_id}&message_id={msg_id}&text={text}&reply_markup={json.dumps(reply_markup)}'
-    else:
-        url = base + f'editMessageText?chat_id={chat_id}&message_id={msg_id}&text={text}'
-    return requests.get(url).json()
+    async def get_chat_member(self, chat_id, user_id):
+        return await self.api_call("getChatMember", {"chat_id": chat_id, "user_id": user_id})
 
-def deleteMessage(chat_id, msg_id):
-    url = base + f'deleteMessage?chat_id={chat_id}&message_id={msg_id}'
-    requests.get(url)
+    async def send_message(self, chat_id, text, reply_markup=None):
+        params = {"chat_id": chat_id, "text": text}
+        if reply_markup:
+            params["reply_markup"] = json.dumps(reply_markup)
+        return await self.api_call("sendMessage", params)
 
-def sendDocument(chat_id, file_id):
-    url = base + f'sendDocument?chat_id={chat_id}&document={file_id}'
-    return requests.get(url).json()
-    
-def sendVideo(chat_id, file_id):
-    url = base + f'sendVideo?chat_id={chat_id}&video={file_id}'
-    print(url)
-    return requests.get(url).json()
+    async def edit_message_text(self, chat_id, msg_id, text, reply_markup=None):
+        params = {"chat_id": chat_id, "message_id": msg_id, "text": text}
+        if reply_markup:
+            params["reply_markup"] = json.dumps(reply_markup)
+        return await self.api_call("editMessageText", params)
 
-def sendPhoto(chat_id, photo, caption=None, reply_markup=None):
-    url = base + f'sendPhoto?chat_id={chat_id}&photo={photo}'
-    if caption:
-        url += f'&caption={caption}'
-    if reply_markup:
-        url += f'&reply_markup={json.dumps(reply_markup)}'
-    return requests.get(url).json()
+    async def delete_message(self, chat_id, msg_id):
+        return await self.api_call("deleteMessage", {"chat_id": chat_id, "message_id": msg_id})
 
-def editMessageCaption(chat_id, msg_id, caption, reply_markup=None):
-    if reply_markup:
-        url = base + f'editMessageCaption?chat_id={chat_id}&message_id={msg_id}&caption={caption}&reply_markup={json.dumps(reply_markup)}'
-    else:
-        url = base + f'editMessageCaption?chat_id={chat_id}&message_id={msg_id}&caption={caption}'
-    return requests.get(url).json()
+    async def send_document(self, chat_id, file_id):
+        return await self.api_call("sendDocument", {"chat_id": chat_id, "document": file_id})
+
+    async def send_video(self, chat_id, file_id):
+        return await self.api_call("sendVideo", {"chat_id": chat_id, "video": file_id})
+
+    async def send_photo(self, chat_id, photo, caption=None, reply_markup=None):
+        params = {"chat_id": chat_id, "photo": photo}
+        if caption:
+            params["caption"] = caption
+        if reply_markup:
+            params["reply_markup"] = json.dumps(reply_markup)
+        return await self.api_call("sendPhoto", params)
+
+    async def edit_message_caption(self, chat_id, msg_id, caption, reply_markup=None):
+        params = {"chat_id": chat_id, "message_id": msg_id, "caption": caption}
+        if reply_markup:
+            params["reply_markup"] = json.dumps(reply_markup)
+        return await self.api_call("editMessageCaption", params)
+
+    async def close(self):
+        await self.session.close()
