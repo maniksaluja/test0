@@ -6,8 +6,8 @@ from resolve import ResolvePeer
 FSUB = [FSUB_1, FSUB_2]
 
 class ClientLike(Client):
-    def init(self, *args, **kwargs):
-        super().init(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     async def resolve_peer(self, id):
         obj = ResolvePeer(self)
@@ -80,3 +80,8 @@ async def start():
     print(f'@{x.username} started.')
     print(f'@{y.username} started.')
     await idle()
+
+if __name__ == "__main__":
+    import asyncio
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start())
