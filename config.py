@@ -1,7 +1,7 @@
 from os import getenv
 
 # Ensure FSUB_1 and FSUB_2 are defined
-FSUB_1 = int(getenv('FSUB_1', '-1002210532935'))
+FSUB_1 = int(getenv('FSUB_1', '-1002346471868'))
 FSUB_2 = int(getenv('FSUB_2', '-1002319501979'))
 
 # Now define FSUB using FSUB_1 and FSUB_2
