@@ -6,12 +6,16 @@ from pyrogram.types import (
 )
 from config import TUTORIAL_LINK
 
+# Improved retry mechanism with async handling
 async def tryer(func, *args, **kwargs):
     try:
         return await func(*args, **kwargs)
     except FloodWait as e:
         await asyncio.sleep(e.value)
         return await func(*args, **kwargs)
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 def grt(seconds: int) -> str:
     if seconds < 60:
@@ -28,7 +32,6 @@ def alpha_grt(sec: int) -> str:
     return "60M+"
 
 from config import AUTO_DELETE_TIME
-
 AUTO_DELETE_STR = grt(AUTO_DELETE_TIME)
 
 startTime = time()
@@ -40,15 +43,19 @@ markup = None
 async def build(_):
     global markup
     if not markup:
-        chats = (await get_chats(_))
+        chats = await get_chats(_)
         new = []
-        for x in chats:
-            y = await _.create_chat_invite_link(x.id, creates_join_request=True)
-            new.append(y.invite_link)
-        for x, y in enumerate(new):
-            chats[x].invite_link = y
+        # Using asyncio.gather to process multiple invite links concurrently
+        tasks = [_.create_chat_invite_link(x.id, creates_join_request=True) for x in chats]
+        invite_links = await asyncio.gather(*tasks)
+        
+        # Assigning invite links to chats
+        for x, link in zip(chats, invite_links):
+            x.invite_link = link.invite_link
+
         chat = chats[0]
         chat1 = chats[1]
+        
         markup = IKM(
             [
                 [
