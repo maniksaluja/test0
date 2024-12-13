@@ -1,5 +1,6 @@
 import pyrogram
 from pyrogram import Client, filters
+from pyrogram.errors import UserAlreadyParticipant, UserIsBlocked
 from config import FSUB_1, FSUB_2, JOIN_IMAGE, MUST_VISIT_LINK, TUTORIAL_LINK
 from templates import JOIN_MESSAGE
 from Database.settings import get_settings
@@ -26,17 +27,21 @@ async def cjr(_: Client, r):
     settings = await get_settings()
     if not settings['auto_approval']:
         return
-    await _.approve_chat_join_request(
-        r.chat.id,
-        r.from_user.id
-    )
-    if not settings["join"]:
-        return
     try:
+        # Approve the chat join request
+        await _.approve_chat_join_request(
+            r.chat.id,
+            r.from_user.id
+        )
+        # Send a welcome message to the user
         if JOIN_IMAGE:
             await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
         else:
             await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
         await add_user_2(r.from_user.id)
+    except UserAlreadyParticipant:
+        pass  # Ignore if user is already a participant
+    except UserIsBlocked:
+        print(f"Cannot send message to user {r.from_user.id}, as they have blocked the bot.")
     except Exception as e:
         print(e)
