@@ -1,3 +1,4 @@
+import pyrogran
 from pyrogram import Client, filters
 from config import FSUB_1, FSUB_2, JOIN_IMAGE, MUST_VISIT_LINK, TUTORIAL_LINK
 from templates import JOIN_MESSAGE
