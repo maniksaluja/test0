@@ -19,7 +19,7 @@ app = ClientLike(
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
     plugins=dict(root='Plugins'),
-    workers=15  # Added worker threads for main bot
+    workers=30 # Added worker threads for main bot
 )
 
 app1 = ClientLike(
