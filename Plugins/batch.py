@@ -79,7 +79,7 @@ async def end(client, message):
         dest_ids_2.append(new.id)
         
         # Add only delay, no messages to user
-        await send_delayed_message()
+        await send_delayed_message(1)
     
     if all_vid:
         duration = sum([msg.video.duration for msg in messages])
