@@ -1,6 +1,6 @@
 import pyrogram
 from pyrogram import Client, filters
-from pyrogram.errors import UserAlreadyParticipant, UserIsBlocked
+from pyrogram.errors import UserAlreadyParticipant, UserIsBlocked, PeerIdInvalid
 from config import FSUB_1, FSUB_2, JOIN_IMAGE, MUST_VISIT_LINK, TUTORIAL_LINK
 from templates import JOIN_MESSAGE
 from Database.settings import get_settings
@@ -43,5 +43,7 @@ async def cjr(_: Client, r):
         pass  # Ignore if user is already a participant
     except UserIsBlocked:
         print(f"Cannot send message to user {r.from_user.id}, as they have blocked the bot.")
+    except PeerIdInvalid:
+        print(f"Cannot send message to user {r.from_user.id}, invalid peer ID.")
     except Exception as e:
         print(e)
