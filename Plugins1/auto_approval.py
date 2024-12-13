@@ -1,78 +1,41 @@
 from pyrogram import Client, filters
-from pyrogram.errors import UserAlreadyParticipant, FloodWait, BadRequest
-from config import FSUB
+from config import FSUB_1, FSUB_2, JOIN_IMAGE, MUST_VISIT_LINK, TUTORIAL_LINK
+from templates import JOIN_MESSAGE
 from Database.settings import get_settings
-import asyncio
-import logging
+from Database.users import add_user_2
+from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
+from .join_leave import get_chats
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+FSUB = [FSUB_1, FSUB_2]
 
-async def is_user_already_participant(client, chat_id, user_id):
-    """Check if the user is already a participant in the chat."""
-    try:
-        chat_member = await client.get_chat_member(chat_id, user_id)
-        if chat_member.status in ["member", "administrator", "creator"]:
-            logger.info(f"User {user_id} is already a participant. Skipping approval.")
-            return True
-    except BadRequest as e:
-        if "USER_NOT_PARTICIPANT" in str(e):
-            logger.debug(f"User {user_id} is not a participant. Proceeding with approval.")
-        else:
-            logger.error(f"Error checking participant status for {user_id}: {str(e)}")
-    return False
-
-async def approve_request(client, chat_id, user_id):
-    """Helper function to approve join request."""
-    try:
-        await client.approve_chat_join_request(chat_id, user_id)
-        logger.info(f"Approved join request for {user_id}")
-        return True
-    except UserAlreadyParticipant:
-        logger.info(f"User {user_id} is already a participant. Skipping approval.")
-        return False
-    except Exception as e:
-        logger.error(f"Error while approving request for {user_id}: {str(e)}")
-        return False
-
-async def send_welcome_message(client, user_id):
-    """Send a welcome message to the new user."""
-    try:
-        await client.send_message(user_id, "Hi! Welcome to the group!")
-        logger.info(f"Sent welcome message to {user_id}")
-    except Exception as e:
-        logger.error(f"Error sending welcome message to {user_id}: {str(e)}")
-
-@Client.on_chat_join_request(filters.chat(FSUB))
-async def cjr(client: Client, request):
+@Client.on_chat_join_request(filters.chat(FSUB_1))
+async def cjr(_: Client, r):
+    link = (await get_chats(_))[1].invite_link
+    markup = IKM(
+      [
+        [
+          IKB("ʙᴀᴄᴋᴜᴘ ᴄʜᴀɴɴᴇʟ", url=link),
+          IKB("ᴄᴏᴅᴇ ʟᴀɴɢᴜᴀɢᴇ", url=MUST_VISIT_LINK)
+        ],
+        [
+          IKB("ʜᴏᴡ ᴛᴏ ᴜsᴇ ᴛᴇʀᴀʙᴏx ʙᴏᴛ", url=TUTORIAL_LINK)
+        ]
+      ]
+    )
     settings = await get_settings()
-
-    if not settings.get('auto_approval', False):
+    if not settings['auto_approval']:
         return
-
-    if await is_user_already_participant(client, request.chat.id, request.from_user.id):
+    await _.approve_chat_join_request(
+        r.chat.id,
+        r.from_user.id
+    )
+    if not settings["join"]:
         return
-
-    if await approve_request(client, request.chat.id, request.from_user.id):
-        await send_welcome_message(client, request.from_user.id)
-
-    else:
-        try:
-            await client.approve_chat_join_request(request.chat.id, request.from_user.id)
-            await client.send_message(request.from_user.id, "Hi! Welcome to the group!")
-        except FloodWait as e:
-            logger.warning(f"Flood wait error: {e.x} seconds. Retrying...")
-            await asyncio.sleep(e.x)
-            await cjr(client, request)
-        except BadRequest as e:
-            if e.MESSAGE == "400 HIDE_REQUESTER_MISSING":
-                logger.warning("Hide requester missing, can't approve join request.")
-            elif "not a member of this chat" in e.MESSAGE:
-                logger.warning(f"User {request.from_user.id} is not a member of the chat.")
-            elif "blocked you" in e.MESSAGE:
-                logger.warning(f"User {request.from_user.id} has blocked the bot. Skipping approval.")
-            else:
-                logger.error(f"BadRequest error: {e.MESSAGE}")
-        except Exception as e:
-            logger.error(f"Unexpected error occurred: {str(e)}")
+    try:
+        if JOIN_IMAGE:
+            await _.send_photo(r.from_user.id, JOIN_IMAGE, caption=JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+        else:
+            await _.send_message(r.from_user.id, JOIN_MESSAGE.format(r.from_user.mention), reply_markup=markup)
+        await add_user_2(r.from_user.id)
+    except Exception as e:
+        print(e)
