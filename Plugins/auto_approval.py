@@ -1,4 +1,4 @@
-import pyrogran
+import pyrogram
 from pyrogram import Client, filters
 from config import FSUB
 from Database.settings import get_settings
