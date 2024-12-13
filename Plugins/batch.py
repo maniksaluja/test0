@@ -12,7 +12,6 @@ from Database.encr import update
 from . import tryer
 
 dic = {}
-
 me = None
 
 class bkl:
@@ -33,10 +32,9 @@ async def get_me(client):
 def in_batch(user_id):
     return user_id in dic or not get_TASK()
 
-async def send_delayed_message(client, chat_id, text, reply_markup=None, delay=3):
-    """Send message with delay to avoid rate limiting issues."""
-    await asyncio.sleep(delay)  # Delay to handle rate limit
-    return await client.send_message(chat_id, text, reply_markup=reply_markup)
+async def send_delayed_message(delay=3):
+    """Delay function to avoid flood limits."""
+    await asyncio.sleep(delay)
 
 @Client.on_message(filters.command('b') & filters.user(SUDO_USERS) & filters.private)
 async def batch(client, message):
@@ -80,8 +78,8 @@ async def end(client, message):
         new = await tryer(msg.copy, DB_CHANNEL_2_ID, caption="#batch")
         dest_ids_2.append(new.id)
         
-        # Add delay to prevent flood
-        await send_delayed_message(client, message.chat.id, "Sending message... Please wait.")
+        # Add only delay, no messages to user
+        await send_delayed_message()
     
     if all_vid:
         duration = sum([msg.video.duration for msg in messages])
