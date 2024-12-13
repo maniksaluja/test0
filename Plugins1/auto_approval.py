@@ -16,8 +16,11 @@ async def is_user_already_participant(client, chat_id, user_id):
         if chat_member.status in ["member", "administrator", "creator"]:
             logger.info(f"User {user_id} is already a participant. Skipping approval.")
             return True
-    except Exception as e:
-        logger.error(f"Error checking participant status for {user_id}: {str(e)}")
+    except BadRequest as e:
+        if "USER_NOT_PARTICIPANT" in str(e):
+            logger.debug(f"User {user_id} is not a participant. Proceeding with approval.")
+        else:
+            logger.error(f"Error checking participant status for {user_id}: {str(e)}")
     return False
 
 async def approve_request(client, chat_id, user_id):
