@@ -35,6 +35,10 @@ async def cjr(client: Client, request):
     except BadRequest as e:
         if e.MESSAGE == "400 HIDE_REQUESTER_MISSING":
             print("Hide requester missing, can't approve join request.")
+        elif "not a member of this chat" in e.MESSAGE:
+            print(f"User {request.from_user.id} is not a member of the chat.")
+        elif "blocked you" in e.MESSAGE:
+            print(f"User {request.from_user.id} has blocked the bot. Skipping approval.")
         else:
             print(f"BadRequest error: {e.MESSAGE}")
     except Exception as e:
