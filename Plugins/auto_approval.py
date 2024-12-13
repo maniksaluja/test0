@@ -1,5 +1,6 @@
 import pyrogram
 from pyrogram import Client, filters
+from pyrogram.errors import UserAlreadyParticipant, UserIsBlocked
 from config import FSUB
 from Database.settings import get_settings
 
@@ -20,5 +21,9 @@ async def cjr(client: Client, request):
         )
         # Send a welcome message to the user
         await client.send_message(request.from_user.id, "Hi")
-    except pyrogram.errors.UserAlreadyParticipant:
+    except UserAlreadyParticipant:
         pass  # Ignore if user is already a participant
+    except UserIsBlocked:
+        print(f"Cannot send message to user {request.from_user.id}, as they have blocked the bot.")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
