@@ -32,8 +32,10 @@ async def get_me(client):
 def in_batch(user_id):
     return user_id in dic or not get_TASK()
 
-async def send_delayed_message(delay=3):
+async def send_delayed_message(delay=None):
     """Delay function to avoid flood limits."""
+    if delay is None:
+        delay = random.uniform(0.5, 2)  # Random delay between 0.5-2 seconds
     await asyncio.sleep(delay)
 
 @Client.on_message(filters.command('b') & filters.user(SUDO_USERS) & filters.private)
@@ -73,13 +75,15 @@ async def end(client, message):
     for msg in messages:
         if not msg.video:
             all_vid = False
+        # Send message to first DB_CHANNEL_ID
         new = await tryer(msg.copy, DB_CHANNEL_ID, caption="#batch")
         dest_ids.append(new.id)
+        await send_delayed_message()  # Add delay after each request
+
+        # Send message to second DB_CHANNEL_2_ID
         new = await tryer(msg.copy, DB_CHANNEL_2_ID, caption="#batch")
         dest_ids_2.append(new.id)
-        
-        # Add only delay, no messages to user
-        await send_delayed_message(1)
+        await send_delayed_message()  # Add delay after each request
     
     if all_vid:
         duration = sum([msg.video.duration for msg in messages])
