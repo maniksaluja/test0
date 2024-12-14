@@ -7,7 +7,6 @@ import asyncio
 
 yes = '☑️'
 no = '❌'
-auto = '🔄'  # Auto toggle button
 
 def markup(dic):
     mark = IKM(
@@ -39,14 +38,6 @@ def markup(dic):
             [
                 IKB('𝘈𝘶𝘵𝘰 𝘎𝘦𝘯𝘦𝘳𝘢𝘵𝘦', callback_data='answer'),
                 IKB(dic.get('generate', 10), callback_data='toggle_gen')
-            ],
-            [
-                IKB('𝘉𝘓𝘜𝘙 𝘛𝘖𝘎𝘓𝘌', callback_data='answer'),
-                IKB(yes if dic.get('blur_enabled', False) else no, callback_data='toggle_blur')
-            ],
-            [
-                IKB('𝘈𝘶𝘵𝘰 𝘉𝘓𝘜𝘙', callback_data='answer'),
-                IKB(auto if dic.get('blur_auto', False) else no, callback_data='toggle_auto_blur')
             ]
         ]
     )
@@ -61,7 +52,7 @@ async def settings(_, m):
     mark = markup(set)
     ok = await m.reply(txt, reply_markup=mark)
     dic[m.from_user.id] = [ok, time()]
-
+    
 async def task():
     while True:
         rem = []
@@ -75,35 +66,5 @@ async def task():
         for y in rem:
             del dic[y]
         await asyncio.sleep(1)
-
+        
 asyncio.create_task(task())
-
-@Client.on_callback_query(filters.regex('toggle_blur'))
-async def toggle_blur(_, cq):
-    user_data = await get_user_settings(cq.from_user.id)
-    blur_enabled = not user_data.get('blur_enabled', False)
-
-    # Update the setting
-    await update_user_settings(cq.from_user.id, {'blur_enabled': blur_enabled})
-
-    # Send updated message
-    await cq.answer(f"Blur is now {'enabled' if blur_enabled else 'disabled'}.")
-
-    # Updating the buttons
-    mark = markup(await get_settings())
-    await cq.edit_message_reply_markup(reply_markup=mark)
-
-@Client.on_callback_query(filters.regex('toggle_auto_blur'))
-async def toggle_auto_blur(_, cq):
-    user_data = await get_user_settings(cq.from_user.id)
-    blur_auto = not user_data.get('blur_auto', False)
-
-    # Update the setting
-    await update_user_settings(cq.from_user.id, {'blur_auto': blur_auto})
-
-    # Send updated message
-    await cq.answer(f"Auto Blur is now {'enabled' if blur_auto else 'disabled'}.")
-
-    # Updating the buttons
-    mark = markup(await get_settings())
-    await cq.edit_message_reply_markup(reply_markup=mark)
