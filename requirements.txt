@@ -4,4 +4,3 @@ motor
 requests
 aiohttp
 pandas
-python-telegram-bot
