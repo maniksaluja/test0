@@ -71,6 +71,20 @@ async def cbq(_, q: CallbackQuery):
         await q.answer()
         await update_settings(dic)
         await q.edit_message_reply_markup(reply_markup=mark)
+    # New logic for blur_enabled and blur_auto (no change to old code)
+    elif data == 'toggle_blur_enabled':
+        dic = await get_settings()
+        dic['blur_enabled'] = not dic.get('blur_enabled', False)
+        mark = markup(dic)
+        await q.answer()
+        await update_settings(dic)
+        await q.edit_message_reply_markup(reply_markup=mark)
+    elif data == 'toggle_blur_auto':
+        dic = await get_settings()
+        dic['blur_auto'] = not dic.get('blur_auto', False)
+        mark = markup(dic)
+        await q.answer()
+        await update_settings(dic)
+        await q.edit_message_reply_markup(reply_markup=mark)
     elif data.startswith(("toggleab", "togglesu", "togglemc", "togglead", "activate")):
         await pay_cbq(_, q)
-        
