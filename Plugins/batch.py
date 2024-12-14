@@ -1,4 +1,5 @@
 import asyncio
+import random  # Import random module
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
 from config import SUDO_USERS, DB_CHANNEL_ID, DB_CHANNEL_2_ID, LOG_CHANNEL_ID, LINK_GENERATE_IMAGE
@@ -75,15 +76,13 @@ async def end(client, message):
     for msg in messages:
         if not msg.video:
             all_vid = False
-        # Send message to first DB_CHANNEL_ID
         new = await tryer(msg.copy, DB_CHANNEL_ID, caption="#batch")
         dest_ids.append(new.id)
-        await send_delayed_message()  # Add delay after each request
-
-        # Send message to second DB_CHANNEL_2_ID
         new = await tryer(msg.copy, DB_CHANNEL_2_ID, caption="#batch")
         dest_ids_2.append(new.id)
-        await send_delayed_message()  # Add delay after each request
+        
+        # Add only delay, no messages to user
+        await send_delayed_message()
     
     if all_vid:
         duration = sum([msg.video.duration for msg in messages])
