@@ -2,6 +2,10 @@ from pyrogram import Client, idle
 from config import *
 import sys
 from resolve import ResolvePeer
+from pyrogram.errors import FloodWait
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 FSUB = [FSUB_1, FSUB_2]
 
@@ -19,7 +23,7 @@ app = ClientLike(
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
     plugins=dict(root='Plugins'),
-    workers=30 # Added worker threads for main bot
+    workers=30  # Added worker threads for main bot
 )
 
 app1 = ClientLike(
@@ -39,48 +43,47 @@ async def start():
         m = await app.send_message(DB_CHANNEL_ID, '.')
         await m.delete()
     except Exception as e:
-        print(e)
-        print("Bot cannot message in DB channel.")
+        logging.error(f"Bot cannot message in DB channel: {e}")
         ret = True
     try:
         m = await app.send_message(DB_CHANNEL_2_ID, '.')
         await m.delete()
-    except:
-        print("Bot cannot message in Backup DB channel.")
+    except Exception:
+        logging.error("Bot cannot message in Backup DB channel.")
         ret = True
     try:
         m = await app.send_message(AUTO_SAVE_CHANNEL_ID, '.')
         await m.delete()
-    except:
-        print("Bot cannot message in Auto Save channel.")
+    except Exception:
+        logging.error("Bot cannot message in Auto Save channel.")
         ret = True
     if LOG_CHANNEL_ID:
         try:
             m = await app.send_message(LOG_CHANNEL_ID, '.')
             await m.delete()
-        except:
-            print("Bot cannot message in LOG channel.")
+        except Exception:
+            logging.error("Bot cannot message in LOG channel.")
             ret = True
     for x in FSUB:
         try:
             m = await app.send_message(x, '.')
             await m.delete()
-        except:
-            print(f'Cannot send message in FSUB channel {x}, quitting.')
+        except Exception:
+            logging.error(f'Cannot send message in FSUB channel {x}, quitting.')
             ret = True
     for x in FSUB:
         try:
             m = await app1.send_message(x, '.')
             await m.delete()
-        except:
-            print(f'Notifier Bot cannot send message in FSUB channel {x}, quitting.')
+        except Exception:
+            logging.error(f'Notifier Bot cannot send message in FSUB channel {x}, quitting.')
             ret = True
     if ret:
         sys.exit()
     x = await app.get_me()
     y = await app1.get_me()
-    print(f'@{x.username} started.')
-    print(f'@{y.username} started.')
+    logging.info(f'@{x.username} started.')
+    logging.info(f'@{y.username} started.')
     await idle()
 
 if __name__ == "__main__":
