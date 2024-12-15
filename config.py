@@ -1,8 +1,8 @@
 from os import getenv
 
 # Ensure FSUB_1 and FSUB_2 are defined
-FSUB_1 = int(getenv('FSUB_1', '-1002346471868'))
-FSUB_2 = int(getenv('FSUB_2', '-1002319501979'))
+FSUB_1 = int(getenv('FSUB_1', '-1002374330304'))
+FSUB_2 = int(getenv('FSUB_2', '-1002374330304'))
 
 # Now define FSUB using FSUB_1 and FSUB_2
 FSUB = [FSUB_1, FSUB_2]
@@ -21,9 +21,9 @@ BOT_TOKEN_2 = getenv('BOT_TOKEN_2', '7208277760:AAGKBNndrcUIjl596wgcpi9SKfiiCORO
 SUDO_USERS = [int(x) for x in getenv('SUDO_USERS', '6604279354 6104594076').split()]
 MONGO_DB_URI = getenv('MONGO_DB_URI', 'mongodb+srv://manik:manik11@cluster0.iam3w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
-DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002230637444'))
-DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002171225671'))
-LOG_CHANNEL_ID = int(getenv('LOG_CHANNEL_ID', '-1002462410192')) if getenv('LOG_CHANNEL_ID') else None
+DB_CHANNEL_ID = int(getenv('DB_CHANNEL_ID', '-1002374330304'))
+DB_CHANNEL_2_ID = int(getenv('DB_CHANNEL_2_ID', '-1002374330304'))
+LOG_CHANNEL_ID = int(getenv('LOG_CHANNEL_ID', '-1002374330304')) if getenv('LOG_CHANNEL_ID') else None
 
 AUTO_DELETE_TIME = int(getenv('AUTO_DELETE_TIME', '0'))  # Enter time in seconds, keep it 0 for disabling.
 
@@ -50,7 +50,7 @@ CONTENT_SAVER = True
 
 EXPIRY_TIME = 30  # In days
 
-AUTO_SAVE_CHANNEL_ID = -1002425448719
+AUTO_SAVE_CHANNEL_ID = -1002374330304
 
 PHONE_NUMBER_IMAGE = "https://graph.org/file/2821554b6b082eb8741dc.jpg"
 
