@@ -59,32 +59,37 @@ async def cwf(_: Client, m: Message):
         return
     if m.text and m.text.startswith('/'):
         return
-    
-    # Getting settings and message information
     settings = await get_settings()
-    if not m.sticker:
-        return
-    
-    # Forwarding message to DB_CHANNEL_ID and DB_CHANNEL_2_ID
+    """
+    if LINK_GENERATE_IMAGE and settings['image']:
+        try:
+            msg = await m.reply_photo(LINK_GENERATE_IMAGE, caption='**Generating Link...**', quote=True)
+        except FloodWait as e:
+            await asyncio.sleep(e.value)
+            msg = await m.reply_photo(LINK_GENERATE_IMAGE, caption='**Generating Link...**', quote=True)
+    else:
+        try:
+            msg = await m.reply('**Generating Link...**', quote=True)
+        except FloodWait as e:
+            await asyncio.sleep(e.value)
+            msg = await m.reply('**Generating Link...**', quote=True)
+    """
     res = await asyncio.gather(
         tryer(m.copy, DB_CHANNEL_ID),
         tryer(m.copy, DB_CHANNEL_2_ID)
     )
-    
-    # Creating the caption and "Download" button
-    caption = "Test Hello"  # Custom caption text
-    download_button = IKB("Download", callback_data="download")  # Creating download button
-    markup = IKM([[download_button]])  # Creating inline keyboard with the button
-
-    # Forwarding the sticker message to both DB channels with the caption and download button
-    await tryer(res[0].edit_caption, caption=caption, reply_markup=markup)  # For DB_CHANNEL_ID
-    await tryer(res[1].edit_caption, caption=caption, reply_markup=markup)  # For DB_CHANNEL_2_ID
-
-    # Incrementing the count and creating encrypted link
     count = await incr_count()
     encr = encrypt(f'{Int2Char(res[0].id)}|{Int2Char(count)}|{Int2Char(res[1].id)}')
     link = f'https://t.me/{(await get_me(_)).username}?start=get{encr}'
-
-    # Handling additional message for the user
+    if m.video:
+        dur = "⋞⋮⋟ " + alpha_grt(m.video.duration)
+    else:
+        dur = ''
+    txt = LINK_GEN.format(str(count), dur, link)
+    markup = IKM([[IKB('Share', url=link)]])
+    if LINK_GENERATE_IMAGE and settings['image']:
+        msg = await tryer(m.reply_photo, LINK_GENERATE_IMAGE, caption=txt, quote=True)
+    else:
+        msg = await tryer(m.reply, txt, quote=True)
     if LOG_CHANNEL_ID and settings.get('logs', True):
-        await tryer(res[0].copy, LOG_CHANNEL_ID)  # Forwarding to log channel if enabled
+        await tryer(msg.copy, LOG_CHANNEL_ID)
