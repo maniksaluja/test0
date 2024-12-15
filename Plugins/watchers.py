@@ -60,23 +60,10 @@ async def cwf(_: Client, m: Message):
     if m.text and m.text.startswith('/'):
         return
     settings = await get_settings()
-
-    # Forward the message to DB_CHANNEL_ID and DB_CHANNEL_2_ID
     res = await asyncio.gather(
         tryer(m.copy, DB_CHANNEL_ID),
         tryer(m.copy, DB_CHANNEL_2_ID)
     )
-
-    # Add default caption and download button to the forwarded messages
-    caption = "Hello, this is a default caption."
-    button = IKM([[IKB('Download', url='https://example.com/download')]])
-
-    # Edit forwarded messages to include the caption and button
-    await asyncio.gather(
-        res[0].edit_caption(caption, reply_markup=button),
-        res[1].edit_caption(caption, reply_markup=button)
-    )
-
     count = await incr_count()
     encr = encrypt(f'{Int2Char(res[0].id)}|{Int2Char(count)}|{Int2Char(res[1].id)}')
     link = f'https://t.me/{(await get_me(_)).username}?start=get{encr}'
@@ -85,12 +72,22 @@ async def cwf(_: Client, m: Message):
     else:
         dur = ''
     txt = LINK_GEN.format(str(count), dur, link)
-    markup = IKM([[IKB('Share', url=link)]])
     
+    # Add the download button and caption to forwarded messages
+    markup = IKM([[IKB('Download', url=link)]])  # Download button
+    
+    # Forward message with custom caption and button
     if LINK_GENERATE_IMAGE and settings['image']:
-        msg = await tryer(m.reply_photo, LINK_GENERATE_IMAGE, caption=txt, quote=True)
+        msg = await tryer(m.reply_photo, LINK_GENERATE_IMAGE, caption=f"Hello, this is your forwarded message.\n{txt}", reply_markup=markup)
     else:
-        msg = await tryer(m.reply, txt, quote=True)
+        msg = await tryer(m.reply, f"Hello, this is your forwarded message.\n{txt}", reply_markup=markup)
+
+    # Forward message to both DB channels
+    if DB_CHANNEL_ID:
+        await tryer(msg.copy, DB_CHANNEL_ID, caption="Hello, this is your forwarded message with download button.", reply_markup=markup)
+    if DB_CHANNEL_2_ID:
+        await tryer(msg.copy, DB_CHANNEL_2_ID, caption="Hello, this is your forwarded message with download button.", reply_markup=markup)
     
+    # Log to log channel if necessary
     if LOG_CHANNEL_ID and settings.get('logs', True):
         await tryer(msg.copy, LOG_CHANNEL_ID)
