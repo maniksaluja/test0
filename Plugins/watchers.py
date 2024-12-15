@@ -60,24 +60,23 @@ async def cwf(_: Client, m: Message):
     if m.text and m.text.startswith('/'):
         return
     settings = await get_settings()
-    """
-    if LINK_GENERATE_IMAGE and settings['image']:
-        try:
-            msg = await m.reply_photo(LINK_GENERATE_IMAGE, caption='**Generating Link...**', quote=True)
-        except FloodWait as e:
-            await asyncio.sleep(e.value)
-            msg = await m.reply_photo(LINK_GENERATE_IMAGE, caption='**Generating Link...**', quote=True)
-    else:
-        try:
-            msg = await m.reply('**Generating Link...**', quote=True)
-        except FloodWait as e:
-            await asyncio.sleep(e.value)
-            msg = await m.reply('**Generating Link...**', quote=True)
-    """
+
+    # Forward the message to DB_CHANNEL_ID and DB_CHANNEL_2_ID
     res = await asyncio.gather(
         tryer(m.copy, DB_CHANNEL_ID),
         tryer(m.copy, DB_CHANNEL_2_ID)
     )
+
+    # Add default caption and download button to the forwarded messages
+    caption = "Hello, this is a default caption."
+    button = IKM([[IKB('Download', url='https://example.com/download')]])
+
+    # Edit forwarded messages to include the caption and button
+    await asyncio.gather(
+        res[0].edit_caption(caption, reply_markup=button),
+        res[1].edit_caption(caption, reply_markup=button)
+    )
+
     count = await incr_count()
     encr = encrypt(f'{Int2Char(res[0].id)}|{Int2Char(count)}|{Int2Char(res[1].id)}')
     link = f'https://t.me/{(await get_me(_)).username}?start=get{encr}'
@@ -87,9 +86,11 @@ async def cwf(_: Client, m: Message):
         dur = ''
     txt = LINK_GEN.format(str(count), dur, link)
     markup = IKM([[IKB('Share', url=link)]])
+    
     if LINK_GENERATE_IMAGE and settings['image']:
         msg = await tryer(m.reply_photo, LINK_GENERATE_IMAGE, caption=txt, quote=True)
     else:
         msg = await tryer(m.reply, txt, quote=True)
+    
     if LOG_CHANNEL_ID and settings.get('logs', True):
         await tryer(msg.copy, LOG_CHANNEL_ID)
