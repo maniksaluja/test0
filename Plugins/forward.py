@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 import time
-from config import api_id, api_hash, bot_token, source_channel, target_channel, forwarding_enabled
+from config import API_ID2, API_HASH2, BOT_TOKEN_2, source_channel, target_channel, forwarding_enabled
 
 app = Client("channel_forwarder", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
