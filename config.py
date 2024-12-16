@@ -47,6 +47,10 @@ USELESS_IMAGE = getenv('USELESS_IMAGE', 'https://graph.org/file/c579032c65d8353e
 STICKER_ID = 'CAACAgUAAxkBAAIiHWZjPezFGPWT_87VHnJUaschvGtrAAJtDgACYpoYV06rLlLA8dv_HgQ'
 
 CONTENT_SAVER = True
+forwarding_enabled = True  # Forwarding ON/OFF control
+
+source_channel = -1002374330304  # Source channel ID
+target_channel = -1002464975309  # Target channel ID
 
 EXPIRY_TIME = 30  # In days
 
