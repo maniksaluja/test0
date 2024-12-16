@@ -28,9 +28,3 @@ async def forward_posts(client, message):
         print(f"RPC Error: {rpc_err}")
     except Exception as ex:
         print(f"An unexpected error occurred: {ex}")
-
-# Run the bot
-if __name__ == "__main__":
-    print("Second bot is starting...")
-    app.run()  # Start the second bot with its own credentials
-    print("Second bot is running...")
